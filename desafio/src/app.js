@@ -44,22 +44,19 @@ const productManager = new ProductManager(io);
 io.on('connection', async (socket) => {
   try {
     console.log('Nuevo cliente conectado');
-
-    // Manejar la lógica del chat aquí...
+    
     socket.on('sendMessage', async (data) => {
-      // Guardar el mensaje en MongoDB
+      
       try {
         const newMessage = await messageModel.create({ user: data.user, message: data.message });
         console.log('Nuevo mensaje guardado en la base de datos:', newMessage);
 
-        // Emitir el evento a todos los clientes para que se actualice la lista de mensajes
         io.emit('newMessage', { user: data.user, message: data.message });
       } catch (error) {
         console.error('Error al guardar el mensaje en la base de datos:', error.message);
       }
     });
 
-    // ... (resto del código)
 
   } catch (error) {
     console.error('Error en la conexión de socket:', error.message);

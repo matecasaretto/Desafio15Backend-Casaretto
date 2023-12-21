@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
       messageList.appendChild(li);
     });
   
-    // También puedes escuchar eventos de nuevos mensajes y agregarlos a la lista
     socket.on('newMessage', (data) => {
       const li = document.createElement('li');
       li.textContent = `${data.user}: ${data.message}`;
