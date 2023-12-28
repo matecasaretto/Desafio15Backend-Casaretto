@@ -102,7 +102,7 @@ router.put("/:cartId", async (req, res) => {
     res.json(updatedCart);
   } catch (error) {
     if (error.name === 'ValidationError') {
-      // Manejar errores de validación
+      
       const validationErrors = Object.values(error.errors).map((err) => err.message);
       res.status(400).json({ error: 'Validation failed', details: validationErrors });
     } else {
@@ -112,18 +112,18 @@ router.put("/:cartId", async (req, res) => {
 });
 
 router.put("/:cartId/products/:productId", async (req, res) => {
-  // Extrae los parámetros de la solicitud
+ 
   const { cartId, productId } = req.params;
   const { quantity } = req.body;
 
   try {
-    // Llama al método para actualizar la cantidad del producto en el carrito
+   
     const updatedCart = await cartManager.updateProductQuantity(cartId, productId, quantity);
 
-    // Responde con el carrito actualizado
+   
     res.json(updatedCart);
   } catch (error) {
-    // En caso de error, responde con un código de estado 500 y el mensaje de error
+  
     res.status(500).json({ error: error.message });
   }
 });
@@ -135,7 +135,7 @@ router.delete("/:cartId/products", async (req, res) => {
     const cart = await cartModel.findOne({ id: cartId });
 
     if (cart) {
-      // Vacía el array de productos en el carrito
+      
       cart.products = [];
       await cart.save();
 

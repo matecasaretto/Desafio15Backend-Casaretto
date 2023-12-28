@@ -23,7 +23,7 @@ router.get('/dbproducts', async (req, res) => {
   try {
     const { limit = 5, page = 1, order, category } = req.query;
 
-    // Configurar opciones de paginación y ordenamiento
+    
     const options = {
       limit: parseInt(limit, 10),
       page: parseInt(page, 10),

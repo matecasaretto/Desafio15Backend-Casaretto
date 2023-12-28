@@ -8,7 +8,6 @@ class DbProductManager {
     try {
       let filtro = {};
 
-      // Añade la búsqueda en $text solo si query tiene un valor
       if (query) {
         filtro.$or = [
           { title: { $regex: new RegExp(query, 'i') } },
@@ -21,10 +20,8 @@ class DbProductManager {
         filtro.category = category;
       }
 
-      // Ajusta la opción de ordenamiento según sortOrder
       const sortOption = sortOrder === 'desc' ? { price: -1 } : { price: 1 };
 
-      // Agrega la opción de ordenamiento a la consulta
       const paginacion = await productModel.paginate(filtro, { ...options, sort: sortOption });
 
       return paginacion;

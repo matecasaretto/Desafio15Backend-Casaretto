@@ -3,14 +3,14 @@ import { Router } from "express";
 import { DbProductManager } from "../dao/managers/dbProductManager.js";
 
 const router = Router();
-const productManager = new DbProductManager(); // Crea una instancia de DbProductManager
+const productManager = new DbProductManager();
 
-// Obtener todos los productos con paginación y ordenamiento
+
 router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, query, order, category } = req.query;
 
-    // Configurar opciones de paginación, ordenamiento y filtrado por categoría
+
     const options = {
       limit: parseInt(limit, 10),
       page: parseInt(page, 10),
@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Agrega un nuevo producto
+
 router.post("/", async (req, res) => {
   const newProduct = req.body;
 
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Obtener un producto por ID
+
 router.get("/:productId", async (req, res) => {
   const { productId } = req.params;
 
@@ -67,7 +67,7 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-// Eliminar un producto por ID
+
 router.delete("/:productId", async (req, res) => {
   const { productId } = req.params;
 
@@ -79,7 +79,7 @@ router.delete("/:productId", async (req, res) => {
   }
 });
 
-// Actualizar un producto por ID
+
 router.put("/:productId", async (req, res) => {
   const { productId } = req.params;
   const updatedProduct = req.body;
@@ -92,12 +92,12 @@ router.put("/:productId", async (req, res) => {
   }
 });
 
-// Función para obtener el objeto de ordenamiento
+
 function getOrderSort(order) {
   if (order === "desc") {
-    return { price: -1 }; // Orden descendente por precio
+    return { price: -1 }; 
   } else {
-    return { price: 1 }; // Orden ascendente por precio (valor predeterminado)
+    return { price: 1 }; 
   }
 }
 

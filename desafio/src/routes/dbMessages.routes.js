@@ -3,7 +3,7 @@ import messageModel from '../dao/models/message.model.js';
 
 const router = Router();
 
-// Obtener todos los mensajes
+
 router.get('/', async (req, res) => {
   try {
     const messages = await messageModel.find();

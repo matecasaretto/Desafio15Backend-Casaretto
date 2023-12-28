@@ -112,7 +112,6 @@ export default class ProductManager {
 
         console.log(`Producto con ID ${id} actualizado.`);
 
-        // Emitir evento 'productChanged'
         this.io.emit('productChanged');
       } else {
         console.log(`No se encontró ningún producto con el ID ${id}. No se realizó ninguna actualización.`);

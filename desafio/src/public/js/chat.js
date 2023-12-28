@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const user = document.getElementById('user').value;
       const message = document.getElementById('message').value;
   
-      // Enviar el mensaje al servidor
+      
       socket.emit('sendMessage', { user, message });
   
-      // Limpiar el campo de mensaje
+      
       document.getElementById('message').value = '';
     });
   
-    // Manejar mensajes en tiempo real
+  
     socket.on('message', (data) => {
       const li = document.createElement('li');
       li.textContent = `${data.user}: ${data.message}`;
