@@ -22,7 +22,12 @@ app.use(express.urlencoded({ extended: true }));
 const MONGO = "mongodb+srv://codermate2:skatemylife2@codermate2.atlvl2t.mongodb.net/ecomerce"
 const connection = mongoose.connect(MONGO)
 
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
+}));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
@@ -30,6 +35,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', viewRouters);
 app.use('/api/products', productsRouters);
 app.use('/api/carts', cartRouter);
+
 app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRouters);
 app.use('/api/dbmessage', dbMessageRouters);

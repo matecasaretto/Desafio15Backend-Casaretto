@@ -1,39 +1,63 @@
+import mongoosePaginate from 'mongoose-paginate-v2';
 import productModel from "../models/product.model.js";
 
+productModel.schema.plugin(mongoosePaginate);
+
 class DbProductManager {
-  async consultarProductos() {
+  async consultarProductos(options, query, category, sortOrder) {
     try {
-      const products = await productModel.find();
-      return products;
+      let filtro = {};
+
+      // Añade la búsqueda en $text solo si query tiene un valor
+      if (query) {
+        filtro.$or = [
+          { title: { $regex: new RegExp(query, 'i') } },
+          { description: { $regex: new RegExp(query, 'i') } },
+          { $text: { $search: query } },
+        ];
+      }
+
+      if (category) {
+        filtro.category = category;
+      }
+
+      // Ajusta la opción de ordenamiento según sortOrder
+      const sortOption = sortOrder === 'desc' ? { price: -1 } : { price: 1 };
+
+      // Agrega la opción de ordenamiento a la consulta
+      const paginacion = await productModel.paginate(filtro, { ...options, sort: sortOption });
+
+      return paginacion;
     } catch (error) {
-      console.error('Error al consultar productos desde MongoDB:', error.message);
+      console.error('Error al obtener productos desde MongoDB:', error.message);
       throw error;
     }
   }
+  
 
   async addProduct(newProduct) {
     try {
       const products = await this.consultarProductos();
-
-      if (products.length === 0) {
-        // Si no hay productos, asignar el id como 1
-        newProduct.id = 1;
-      } else {
-        // Obtener el último ID y asignar el siguiente
-        const lastProductId = products[products.length - 1].id;
-        newProduct.id = lastProductId + 1;
+      if (newProduct && (typeof newProduct.id === 'undefined' || newProduct.id === null)) {
+        if (products.length === 0) {
+          newProduct.id = 1;
+        } else {
+          const lastProductId = products[products.length - 1].id;
+          newProduct.id = lastProductId + 1;
+        }
       }
-
+  
       const createdProduct = await productModel.create(newProduct);
-
+  
       console.log('Product added:', createdProduct);
-
+  
       return createdProduct;
     } catch (error) {
       console.error('Error al agregar producto:', error.message);
       throw error;
     }
   }
+  
 
   async getProductById(id) {
     try {

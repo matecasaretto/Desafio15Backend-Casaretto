@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Carrito</title>
 </head>
 <body>
-  <h1>Chat</h1>
-  <ul id="message-list"></ul>
-  <form id="message-form">
-    <label for="user">User:</label>
-    <input type="text" id="user" name="user" required>
-    <label for="message">Message:</label>
-    <input type="text" id="message" name="message" required>
-    <button type="submit">Send</button>
-  </form>
+    <h1>Detalles del Carrito</h1>
 
-  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-  <script src="/js/chat.js"></script>
-
-  
+    {{#if cart}}
+        <h2>ID del Carrito: {{cart.id}}</h2>
+        <p>Productos en el carrito:</p>
+        <ul>
+            {{#each cart.products}}
+                <li>
+                    {{this.product.title}} - Cantidad: {{this.quantity}}
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>Carrito no encontrado.</p>
+    {{/if}}
 </body>
 </html>
