@@ -52,8 +52,9 @@ io.on('connection', async (socket) => {
     console.log('Nuevo cliente conectado');
     
     socket.on('sendMessage', async (data) => {
-      
       try {
+        console.log('Mensaje recibido:', data);
+
         const newMessage = await messageModel.create({ user: data.user, message: data.message });
         console.log('Nuevo mensaje guardado en la base de datos:', newMessage);
 
@@ -62,11 +63,10 @@ io.on('connection', async (socket) => {
         console.error('Error al guardar el mensaje en la base de datos:', error.message);
       }
     });
-
-
   } catch (error) {
     console.error('Error en la conexión de socket:', error.message);
   }
 });
+
 
 export default app;
