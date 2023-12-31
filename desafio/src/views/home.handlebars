@@ -1,9 +1,26 @@
-<!-- En home.handlebars -->
-<div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listado de Productos</title>
+</head>
+<body>
   <h1>Listado de Productos</h1>
   <ul>
-    {{#each products}}
-      <li>{{this.price}} - {{this.title}} - {{this.stock}}</li>
+    {{#each products.docs}}
+      <li>
+        <strong>ID:</strong> {{this.id}}<br>
+        <strong>Título:</strong> {{this.title}}<br>
+        <strong>Descripción:</strong> {{this.description}}<br>
+        <strong>Precio:</strong> {{this.price}}<br>
+        <strong>Thumbnail:</strong> {{this.thumbnail}}<br>
+        <strong>Código:</strong> {{this.code}}<br>
+        <strong>Stock:</strong> {{this.stock}}<br>
+        <strong>Estado:</strong> {{this.status}}<br>
+      </li>
     {{/each}}
   </ul>
-</div>
+</body>
+</html>

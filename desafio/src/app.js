@@ -8,6 +8,7 @@ import { cartRouter } from './routes/carts.routes.js';
 import ProductManager from './dao/managers/ProductManager.js';
 import mongoose from 'mongoose';
 import messageModel from './dao/models/message.model.js';
+import productModel from './dao/models/product.model.js';
 
 import { dbProductsRouters } from './routes/dbProducts.routes.js';
 import { dbCartsRouters } from './routes/dbCarts.routes.js';
@@ -50,7 +51,17 @@ const productManager = new ProductManager(io);
 io.on('connection', async (socket) => {
   try {
     console.log('Nuevo cliente conectado');
-    
+
+    const getUpdatedProducts = async () => {
+      try {
+        const updatedProducts = await productModel.find({}).lean();
+        return updatedProducts;
+      } catch (error) {
+        console.error('Error al obtener productos actualizados:', error.message);
+        throw error;
+      }
+    };
+
     socket.on('sendMessage', async (data) => {
       try {
         console.log('Mensaje recibido:', data);
@@ -63,10 +74,15 @@ io.on('connection', async (socket) => {
         console.error('Error al guardar el mensaje en la base de datos:', error.message);
       }
     });
+
+    const updatedProducts = await getUpdatedProducts();
+    io.emit('realTimeProductsUpdate', { products: updatedProducts });
   } catch (error) {
     console.error('Error en la conexión de socket:', error.message);
   }
 });
+
+
 
 
 export default app;

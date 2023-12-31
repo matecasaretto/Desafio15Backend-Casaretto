@@ -44,6 +44,7 @@ router.post("/", async (req, res) => {
 
   try {
     const createdProduct = await productManager.addProduct(newProduct);
+    io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
     res.json(createdProduct);
   } catch (error) {
     res.status(500).json({ error: error.message });

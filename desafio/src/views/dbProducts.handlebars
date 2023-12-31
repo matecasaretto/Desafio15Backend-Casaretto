@@ -6,35 +6,38 @@
   <title>Lista de Productos</title>
 </head>
 <body>
-<h1>Lista de Productos</h1>
+  <h1>Lista de Productos</h1>
 
-{{#each products.payload}}
-  <div>
-    <p>Título: {{title}}</p>
-    <p>Descripción: {{description}}</p>
-    <p>Precio: {{price}}</p>
-    <p>Thumbnail: {{thumbnail}}</p>
-    <p>Código: {{code}}</p>
-    <p>Stock: {{stock}}</p>
-    <p>Estado: {{status}}</p>
-    <p>Categoría: {{category}}</p>
-    <p>Id: {{id}}</p>
-    
-    <!-- Agregar botón de "Agregar al Carrito" -->
-    <button onclick="addToCart('{{_id}}')">Agregar al Carrito</button>
-  </div>
-{{/each}}
+  {{#each products.payload}}
+    <div>
+      <p>Título: {{title}}</p>
+      <p>Descripción: {{description}}</p>
+      <p>Precio: {{price}}</p>
+      <p>Thumbnail: {{thumbnail}}</p>
+      <p>Código: {{code}}</p>
+      <p>Stock: {{stock}}</p>
+      <p>Estado: {{status}}</p>
+      <p>Categoría: {{category}}</p>
+      <p>Id: {{id}}</p>
+      
+      <!-- Formulario para agregar al carrito -->
+      <form action="/api/dbcarts" method="post">
+        <input type="hidden" name="product" value="{{id}}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="submit" value="Agregar al Carrito">
+      </form>
+    </div>
+  {{/each}}
 
-{{#if products.hasPrevPage}}
-  <a href="{{products.prevLink}}">Página anterior</a>
-{{/if}}
+  {{#if products.hasPrevPage}}
+    <a href="{{products.prevLink}}">Página anterior</a>
+  {{/if}}
 
-{{#if products.hasNextPage}}
-  <a href="{{products.nextLink}}">Página siguiente</a>
-{{/if}}
+  {{#if products.hasNextPage}}
+    <a href="{{products.nextLink}}">Página siguiente</a>
+  {{/if}}
 
-    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-    <script src="/js/addCart.js"></script>
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  <script src="/js/addCart.js"></script>
 </body>
 </html>
-

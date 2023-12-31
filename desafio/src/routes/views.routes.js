@@ -2,8 +2,6 @@ import express from 'express';
 import { DbProductManager } from '../dao/managers/dbProductManager.js';
 import { DbCartManager } from '../dao/managers/dbCartManager.js';
 
-
-
 const router = express.Router();
 const cartManager = new DbCartManager();
 const productManager = new DbProductManager(); 
@@ -11,12 +9,20 @@ const productManager = new DbProductManager();
 router.get('/', async (req, res) => {
   try {
     const products = await productManager.consultarProductos();
+    
 
     res.render('home', { products });
   } catch (error) {
     console.error('Error al obtener la lista de productos:', error.message);
     res.status(500).send('Error interno del servidor');
   }
+});
+
+router.post('/carts/:cartId/add-to-cart', async (req, res) => {
+  const cartId = req.params.cartId;
+  const productId = req.body.productId; 
+  
+  res.json({ message: 'Producto agregado al carrito con éxito' });
 });
 
 router.get('/dbproducts', async (req, res) => {
