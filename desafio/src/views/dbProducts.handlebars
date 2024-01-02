@@ -20,7 +20,6 @@
       <p>Categoría: {{category}}</p>
       <p>Id: {{id}}</p>
       
-      <!-- Formulario para agregar al carrito -->
       <form action="/api/dbcarts" method="post">
         <input type="hidden" name="product" value="{{id}}">
         <input type="hidden" name="quantity" value="1">
