@@ -6,12 +6,25 @@ const router = express.Router();
 const cartManager = new DbCartManager();
 const productManager = new DbProductManager(); 
 
-router.get('/', async (req, res) => {
+const publicAccess = (req, res, next) =>{
+  if(req.session.user){
+      return res.redirect('/');
+  }
+  next();
+}
+
+const privateAccess = (req, res, next) =>{
+  if(!req.session.user){
+      return res.redirect('/login');
+  }
+  next();
+}
+
+router.get('/', privateAccess, async (req, res) => {
   try {
     const products = await productManager.consultarProductos();
     
-
-    res.render('home', { products });
+    res.render('home', { products, user: req.session.user }); 
   } catch (error) {
     console.error('Error al obtener la lista de productos:', error.message);
     res.status(500).send('Error interno del servidor');
@@ -81,6 +94,21 @@ router.get('/realtimeproducts', (req, res) => {
 
 router.get('/chat', (req, res) => {
   res.render('chat'); 
+});
+
+//sessions
+
+router.get('/register', publicAccess, (req,res)=>{
+  res.render('register')
+})
+
+router.get('/login', publicAccess, (req,res)=>{
+  res.render('login')
+})
+
+router.get('/profile', (req, res) => {
+  console.log('Datos del usuario en /profile:', req.session.user);
+  res.render('profile', { user: req.session.user });
 });
 
 export default router;

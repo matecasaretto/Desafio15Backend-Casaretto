@@ -1,4 +1,6 @@
 import express from 'express';
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
 import { __dirname } from './utils.js';
@@ -13,15 +15,28 @@ import productModel from './dao/models/product.model.js';
 import { dbProductsRouters } from './routes/dbProducts.routes.js';
 import { dbCartsRouters } from './routes/dbCarts.routes.js';
 import { dbMessageRouters } from './routes/dbMessages.routes.js';
+import { sessionRoutes } from './routes/sessions.routes.js';
 
 const app = express();
 const PORT = 8096;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'))
 
 const MONGO = "mongodb+srv://codermate2:skatemylife2@codermate2.atlvl2t.mongodb.net/ecomerce"
 const connection = mongoose.connect(MONGO)
+
+app.use(session({
+  store: new MongoStore({
+    mongoUrl: MONGO,
+    ttl: 3600
+  }),
+  secret: "CoderSecret",
+  resave: false,
+  saveUninitialized: false
+}))
+
 
 app.engine('handlebars', engine({
   runtimeOptions: {
@@ -31,11 +46,11 @@ app.engine('handlebars', engine({
 }));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
-app.use(express.static(__dirname + '/public'));
 
 app.use('/', viewRouters);
 app.use('/api/products', productsRouters);
 app.use('/api/carts', cartRouter);
+app.use('/api/sessions', sessionRoutes)
 
 app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRouters);

@@ -1,0 +1,12 @@
+<div>
+    <h1>Tu perfil (Sin datos sensibles)</h1>
+    <p>Nombre: {{user.full_name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>Edad: {{user.age}}</p>
+    {{#if user.role}}
+        <p>Rol: {{user.role}}</p>
+    {{else}}
+        <p>Rol: No especificado</p>
+    {{/if}}
+    <a href="/api/sessions/logout"><button>Cerrar sesión</button></a>
+</div>
