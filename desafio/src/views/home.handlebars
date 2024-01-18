@@ -9,8 +9,7 @@
 <body>
   <h1>Listado de Productos</h1>
   {{#if user}}
-    <strong>Bienvenido, {{user.full_name}}, estos son nuestros productos para ti!!</strong>
-  {{/if}}
+    <strong>Bienvenido, {{user.first_name}} {{user.last_name}}, estos son nuestros productos para ti!!</strong>  {{/if}}
   <ul>
     {{#each products.docs}}
       <li>

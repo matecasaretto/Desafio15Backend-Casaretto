@@ -11,11 +11,13 @@ import ProductManager from './dao/managers/ProductManager.js';
 import mongoose from 'mongoose';
 import messageModel from './dao/models/message.model.js';
 import productModel from './dao/models/product.model.js';
+import passport from 'passport';
 
 import { dbProductsRouters } from './routes/dbProducts.routes.js';
 import { dbCartsRouters } from './routes/dbCarts.routes.js';
 import { dbMessageRouters } from './routes/dbMessages.routes.js';
 import { sessionRoutes } from './routes/sessions.routes.js';
+import inicializePassport from './config/passport.config.js';
 
 const app = express();
 const PORT = 8096;
@@ -27,6 +29,7 @@ app.use(express.static(__dirname + '/public'))
 const MONGO = "mongodb+srv://codermate2:skatemylife2@codermate2.atlvl2t.mongodb.net/ecomerce"
 const connection = mongoose.connect(MONGO)
 
+
 app.use(session({
   store: new MongoStore({
     mongoUrl: MONGO,
@@ -36,6 +39,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+
+inicializePassport()
+app.use(passport.initialize());
+app.use(passport.session())
 
 
 app.engine('handlebars', engine({
