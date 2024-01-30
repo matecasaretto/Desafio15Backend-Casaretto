@@ -44,29 +44,45 @@ router.post("/login", passport.authenticate("login", { failureRedirect: '/api/se
                 return res.status(400).send({ status: "error" });
             }
 
-            // Verificar el rol del usuario después de la autenticación
+            
             if (req.user.email === "adminCoder@coder.com" && req.user.password === "adminCoder123") {
                 req.user.role = "admin";
             }
 
+             let cartInfo = 2;
+            if (req.user.cart) {
+                console.log('ID del carrito a buscar:', req.user.cart);
+                const cart = await Cart.findById(req.user.cart).populate('products.product');
+                console.log('Resultado de la búsqueda del carrito:', cart);
+                if (!cart) {
+                    console.log('No se encontró el carrito asociado al usuario');
+                    return res.status(500).send({
+                        status: "error",
+                        error: "No se pudo encontrar el carrito asociado al usuario"
+                    });
+                }
+                cartInfo = {
+                    id: cart._id,
+                };
+            }
+            console.log('Información del carrito:', cartInfo);
             req.session.user = {
                 first_name: req.user.first_name,
                 last_name: req.user.last_name,
                 age: req.user.age,
                 email: req.user.email,
-                role: req.user.role
+                role: req.user.role,
+                cart: cartInfo, 
             };
-
             res.send({
                 status: "success",
                 payload: req.session.user
             });
         } catch (error) {
-            // Manejar cualquier error que pueda ocurrir durante la verificación del rol
             console.error(error);
             res.status(500).send({
                 status: "error",
-                error: "Error en la verificación del rol"
+                error: "Error en la verificación del rol o al obtener información del carrito"
             });
         }
     }
@@ -119,5 +135,27 @@ router.post("/restartPassword", async (req,res)=>{
         message:"contraseña restaurada"
     })
 })
+
+router.get("/current", (req, res) => {
+    try {
+        if (req.session && req.session.user) {
+            res.status(200).json({
+                status: "success",
+                user: req.session.user
+            });
+        } else {
+            res.status(401).json({
+                status: "error",
+                message: "No hay sesión de usuario activa"
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "error",
+            message: "Error al obtener el usuario actual"
+        });
+    }
+});
 
 export { router as sessionRoutes };
