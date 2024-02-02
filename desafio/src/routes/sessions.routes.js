@@ -8,33 +8,36 @@ const router = new Router();
 
 
 router.post("/register", passport.authenticate("register", { failureRedirect: "/api/sessions/failregister" }),
-async (req, res) => {
+  async (req, res) => {
     try {
-        // Verificar si el nuevo usuario tiene el correo y contraseña específicos
-        if (req.body.email === "adminCoder@coder.com" && req.body.password === "adminCoder123") {
-            req.user.role = "admin";
-        }
+      
+      if (req.body.email === "adminCoder@coder.com" && req.body.password === "adminCoder123") {
+        req.user.role = "admin";
+      }
 
-        // Guardar el usuario en la base de datos
-        await req.user.save();
+      req.user.cart = null;
 
-        res.send({
-            status: "success",
-            message: "Usuario registrado exitosamente"
-        });
+      await req.user.save();
+
+      res.send({
+        status: "success",
+        message: "Usuario registrado exitosamente"
+      });
     } catch (error) {
-        console.error(error);
-        res.status(500).send({
-            status: "error",
-            error: "Error en el registro"
-        });
+      console.error(error);
+      res.status(500).send({
+        status: "error",
+        error: "Error en el registro"
+      });
     }
-}
+  }
 );
-router.get("/failregister", async (req,res)=>{
-    console.log('Fallo el registro');
-    res.send({error: 'fallo en el registro'})
-})
+
+router.get("/failregister", async (req, res) => {
+  console.log('Fallo el registro');
+  res.send({ error: 'fallo en el registro' });
+});
+
 
 
 router.post("/login", passport.authenticate("login", { failureRedirect: '/api/sessions/faillogin' }),
