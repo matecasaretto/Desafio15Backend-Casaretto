@@ -1,17 +1,9 @@
 import { Router } from 'express';
-import messageModel from '../dao/models/message.model.js';
+import { getAllMessages } from '../controllers/dbMessages.controller.js';
 
 const router = Router();
 
-
-router.get('/', async (req, res) => {
-  try {
-    const messages = await messageModel.find();
-    res.send({ messages });
-  } catch (error) {
-    console.error('Error al obtener la lista de mensajes:', error.message);
-    res.status(500).send('Error interno del servidor');
-  }
-});
+// Ruta para obtener todos los mensajes
+router.get('/', getAllMessages);
 
 export { router as dbMessageRouters };

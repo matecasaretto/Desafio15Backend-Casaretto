@@ -14,9 +14,6 @@ router.get('/', async (req, res) => {
   })
 });
 
-
-
-
 router.get('/:cid', async (req, res) => {
   const cid = req.params.cid;
 
@@ -37,9 +34,6 @@ router.get('/:cid', async (req, res) => {
   }
 });
 
-
-
-
 router.post('/', async (req, res) => {
   try {
     const newCart = await cartManager.createCart(req.body); 
@@ -55,8 +49,6 @@ router.post('/', async (req, res) => {
     });
   }
 });
-
-
 
 router.post('/:cid/product/:pid', async (req, res) => {
   const cid = req.params.cid;
@@ -79,24 +71,6 @@ router.post('/:cid/product/:pid', async (req, res) => {
     });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 router.put('/:cid', async (req, res) => {
     res.send({

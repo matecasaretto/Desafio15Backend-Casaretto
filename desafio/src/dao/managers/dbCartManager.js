@@ -103,11 +103,11 @@ class DbCartManager {
   async getCartById(cartId) {
     try {
       const cart = await cartModel.findOne({ id: cartId });
-
+  
       if (!cart) {
         throw new Error(`Carrito con ID ${cartId} no encontrado.`);
       }
-
+  
       return cart;
     } catch (error) {
       console.error(`Error al obtener el carrito con ID ${cartId}: ${error.message}`);
