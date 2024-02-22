@@ -40,6 +40,3 @@ export const config = {
         pass: PASSWORD_ADMIN
     }
 }
-
-
-

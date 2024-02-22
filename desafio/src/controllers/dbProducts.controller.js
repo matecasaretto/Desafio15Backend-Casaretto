@@ -1,6 +1,4 @@
-import { DbProductManager } from "../dao/managers/dbProductManager.js";
-
-const productManager = new DbProductManager();
+import { dbProductService } from "../repository/index.js";
 
 async function getAllProducts(req, res) {
   try {
@@ -12,7 +10,7 @@ async function getAllProducts(req, res) {
       sort: getOrderSort(order),
     };
 
-    const result = await productManager.consultarProductos(options, query, category);
+    const result = await dbProductService.getAllProducts(options, query, category);
 
     const response = {
       status: "success",
@@ -33,11 +31,11 @@ async function getAllProducts(req, res) {
   }
 }
 
-async function createProduct(req, res) {
+async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
-    const createdProduct = await productManager.addProduct(newProduct);
+    const createdProduct = await dbProductService.createProduct(newProduct);
     io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
     res.json(createdProduct);
   } catch (error) {
@@ -49,7 +47,7 @@ async function getProductById(req, res) {
   const { productId } = req.params;
 
   try {
-    const product = await productManager.getProductById(productId);
+    const product = await dbProductService.getProductById(productId);
 
     if (product) {
       res.json(product);
@@ -65,7 +63,7 @@ async function deleteProductById(req, res) {
   const { productId } = req.params;
 
   try {
-    await productManager.deleteProduct(productId);
+    await dbProductService.deleteProductById(productId);
     res.json({ message: `Producto con ID ${productId} eliminado exitosamente` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -77,7 +75,7 @@ async function updateProduct(req, res) {
   const updatedProduct = req.body;
 
   try {
-    await productManager.updateProduct(productId, updatedProduct);
+    await dbProductService.updateProduct(productId, updatedProduct);
     res.json({ message: `Producto con ID ${productId} actualizado exitosamente` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -92,4 +90,4 @@ function getOrderSort(order) {
   }
 }
 
-export { getAllProducts, createProduct, getProductById, deleteProductById, updateProduct };
+export { getAllProducts, addProduct, getProductById, deleteProductById, updateProduct };

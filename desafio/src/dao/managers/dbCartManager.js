@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import cartModel from '../models/cart.model.js';
 import productModel from '../models/product.model.js';
 
@@ -12,15 +11,46 @@ class DbCartManager {
       throw error;
     }
   }
-
+  
+  async deleteProductFromCart(cartId, productId) {
+    try {
+        console.log('ID del carrito:', cartId);
+        console.log('ID del producto a eliminar:', productId);
+      
+        const cart = await cartModel.findOne({ _id: cartId });
+        console.log('Carrito encontrado:', cart);
+      
+        if (!cart) {
+            throw new Error(`Carrito con ID ${cartId} no encontrado.`);
+        }
+  
+        const index = cart.products.findIndex((p) => p.product.toString() === productId.toString());
+        console.log('Índice del producto en el carrito:', index);
+      
+        if (index === -1) {
+            throw new Error(`Producto con ID ${productId} no encontrado en el carrito.`);
+        }
+  
+        cart.products.splice(index, 1); // Elimina el producto del array de productos del carrito
+        console.log('Producto eliminado del carrito');
+      
+        await cart.save();
+      
+        return cart;
+    } catch (error) {
+        console.error(`Error al eliminar el producto del carrito: ${error.message}`);
+        throw error;
+    }
+}
+  
   async createCart() {
     try {
-      const lastCart = await cartModel.findOne().sort({ id: -1 });
+      const lastCart = await cartModel.findOne().sort({ _id: -1 });
 
-      const newCartId = lastCart ? lastCart.id + 1 : 1;
+      const newCartId = lastCart ? lastCart._id + 1 : 1;
 
       const newCart = new cartModel({
-        id: newCartId,
+        _id: newCartId,
         products: [],
       });
 
@@ -59,21 +89,17 @@ class DbCartManager {
       const existingProduct = cart.products.find((p) => p.product.toString() === productId.toString());
   
       if (existingProduct) {
-       
         existingProduct.quantity += quantity;
       } else {
-       
         const product = await productModel.findOne({ _id: productId });
   
         if (!product) {
           throw new Error(`Producto con ID ${productId} no encontrado.`);
         }
   
-      
         cart.products.push({ product: product._id, quantity });
       }
   
-     
       await cart.save();
   
       return cart;

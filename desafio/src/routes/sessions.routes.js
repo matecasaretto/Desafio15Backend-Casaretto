@@ -1,8 +1,8 @@
-// src/routes/sessions.routes.js
-
 import { Router } from "express";
 import passport from "passport";
 import { register, login } from "../controllers/sessions.controller.js";
+import { GetUserDto } from "../dao/dto/user.dto.js";
+
 
 const router = new Router();
 
@@ -74,9 +74,10 @@ router.post("/restartPassword", async (req,res)=>{
 router.get("/current", (req, res) => {
   try {
     if (req.session && req.session.user) {
+      const userDTO = new GetUserDto(req.session.user);
       res.status(200).json({
         status: "success",
-        user: req.session.user
+        user: userDTO
       });
     } else {
       res.status(401).json({

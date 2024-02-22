@@ -30,7 +30,30 @@ class DbProductManager {
       throw error;
     }
   }
+
+  async updateProductStock(productId, newStock) {
+    try {
+      const updatedProduct = await productModel.findByIdAndUpdate(productId, { stock: newStock }, { new: true });
+      if (!updatedProduct) {
+        console.error(`Producto con ID ${productId} no encontrado.`);
+        return null;
+      }
+      console.log(`Stock del producto con ID ${productId} actualizado a ${newStock}.`);
+      return updatedProduct;
+    } catch (error) {
+      console.error('Error al actualizar el stock del producto:', error.message);
+      throw error;
+    }
+  }
   
+  async getAllProducts(options, query, category, sortOrder) {
+    try {
+      return await this.consultarProductos(options, query, category, sortOrder);
+    } catch (error) {
+      console.error('Error al obtener todos los productos:', error.message);
+      throw error;
+    }
+  }
 
   async addProduct(newProduct) {
     try {

@@ -4,15 +4,32 @@ import { createHash } from "../utils.js";
 
 async function register(req, res) {
   try {
-    if (req.body.email === "adminCoder@coder.com" && req.body.password === "adminCoder123") {
-      req.user.role = "admin";
+    const { email, password } = req.body;
+
+    // Buscar el usuario por correo electrónico
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).send({
+        status: "error",
+        error: "Usuario no encontrado"
+      });
     }
 
+    // Verificar si es un usuario admin
+    if (email === "adminCoder@coder.com" && password === "adminCoder123") {
+      user.role = "admin";
+    } else {
+      user.role = "user";
+    }
+
+    // Crear un nuevo carrito para el usuario
     const newCart = new cartModel(); 
     await newCart.save(); 
-    req.user.cart = newCart._id; 
+    user.cart = newCart._id; 
 
-    await req.user.save(); 
+    // Guardar los cambios en el usuario
+    await user.save(); 
 
     res.send({
       status: "success",

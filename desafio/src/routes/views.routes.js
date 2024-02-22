@@ -1,4 +1,6 @@
 import express from 'express';
+import { checkRole } from '../midleware/authorizationMiddleware.js';
+
 import {
   home,
   addToCart,
@@ -33,7 +35,7 @@ router.post('/carts/:cartId/add-to-cart', addToCart);
 router.get('/dbproducts', dbProducts);
 router.get('/carts/:cartId', dbCart);
 router.get('/realtimeproducts', realTimeProducts);
-router.get('/chat', chat);
+router.get('/chat', checkRole('user'), chat);
 router.get('/register', publicAccess, register);
 router.get('/login', publicAccess, login);
 router.get('/profile', profile);
