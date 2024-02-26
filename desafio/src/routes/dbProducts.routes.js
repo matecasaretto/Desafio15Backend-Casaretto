@@ -8,6 +8,6 @@ router.get("/", getAllProducts);
 router.post("/", checkRole('admin'), addProduct); 
 router.get("/:productId", getProductById);
 router.delete("/:productId",checkRole('admin'), deleteProductById); 
-router.put("/:productId", checkRole('admin'), updateProduct); 
+router.put("/:productId", updateProduct); 
 
 export default router;

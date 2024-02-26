@@ -2,6 +2,7 @@ import { dbCartService } from '../repository/index.js';
 import { dbProductService } from '../repository/index.js';
 import { dbTicketService } from '../repository/index.js';
 import { v4 as uuidv4 } from 'uuid';
+
 import User from '../dao/models/user.model.js';
 
 import mongoose from 'mongoose';
@@ -25,8 +26,9 @@ function calculateTotalAmount(products) {
 }
 
 
-export async function purchaseCart(cartId, userId) {
+export async function purchaseCart(req, res) {
   try {
+    const cartId = req.params.cartId;
     console.log("Iniciando proceso de compra...");
     console.log("El ID del carrito es:", cartId);
 
@@ -35,19 +37,25 @@ export async function purchaseCart(cartId, userId) {
 
     if (!cart) {
       console.log("El carrito no existe");
-      return { error: "El carrito no existe" };
+      return res.status(404).json({ error: "El carrito no existe" });
     }
 
     // Verificar el stock de cada producto en el carrito
     for (const cartProduct of cart.products) {
-      const product = cartProduct.product;
+      const product = await productModel.findById(cartProduct.product);
+      console.log("Producto:", product); // Verifica que el producto se ha encontrado correctamente
+    
       const quantityInCart = cartProduct.quantity;
-
-      console.log(`Verificando stock para el producto ${product.name}...`);
-
+    
+      console.log(`Verificando stock para el producto ${product.title}...`);
+    
       if (product.stock < quantityInCart) {
-        console.log(`No hay suficiente stock para el producto ${product.name}`);
-        return { error: `No hay suficiente stock para el producto ${product.name}` };
+        console.log(`No hay suficiente stock para el producto ${product.title}`);
+        // Ajusta la cantidad en el carrito para que no exceda la cantidad disponible en stock
+        cartProduct.quantity = product.stock;
+        // Actualiza el carrito en la base de datos
+        await cart.save();
+        return res.status(400).json({ error: `No hay suficiente stock para el producto ${product.title}. La cantidad máxima disponible es ${product.stock}` });
       }
     }
 
@@ -56,10 +64,10 @@ export async function purchaseCart(cartId, userId) {
     let totalAmount = 0;
 
     for (const cartProduct of cart.products) {
-      const product = cartProduct.product;
+      const product = await productModel.findById(cartProduct.product);
       const quantityInCart = cartProduct.quantity;
 
-      console.log(`Actualizando stock para el producto ${product.name}...`);
+      console.log(`Actualizando stock para el producto ${product.title}...`);
 
       // Actualizar el stock del producto
       product.stock -= quantityInCart;
@@ -79,10 +87,9 @@ export async function purchaseCart(cartId, userId) {
 
     // Crear el ticket de compra
     const newTicket = {
-      code: generateUniqueCode(), // Implementa tu propia función para generar un código único
+      code: generateUniqueCode(), 
       purchase_datetime: new Date(),
       amount: totalAmount,
-      purchaser: userId // Utiliza la información de usuario autenticado para el comprador
     };
     const ticket = await Ticket.create(newTicket);
 
@@ -94,10 +101,10 @@ export async function purchaseCart(cartId, userId) {
 
     console.log("Compra realizada exitosamente");
 
-    return { status: "success", message: "Compra realizada exitosamente", ticket: ticket };
+    return res.status(200).json({ status: "success", message: "Compra realizada exitosamente", ticket: ticket });
   } catch (error) {
     console.error("Error al procesar la compra:", error);
-    return { error: "Error al procesar la compra" };
+    return res.status(500).json({ error: "Error al procesar la compra" });
   }
 }
 
