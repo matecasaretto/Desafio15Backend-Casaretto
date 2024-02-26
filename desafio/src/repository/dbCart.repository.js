@@ -3,7 +3,7 @@ import productModel from '../dao/models/product.model.js';
 
 class DbCartRepository {
     constructor() {
-        // No se requiere el DAO en el constructor, ya que estamos trabajando directamente con el modelo de carrito y producto
+        
     }
 
     async getCarts() {
