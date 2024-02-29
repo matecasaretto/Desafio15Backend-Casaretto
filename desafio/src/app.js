@@ -12,6 +12,7 @@ import mongoose from 'mongoose';
 import messageModel from './dao/models/message.model.js';
 import productModel from './dao/models/product.model.js';
 import passport from 'passport';
+import mockRouter from './routes/mockRouter.js';
 
 import {config} from "./config/config.js"
 
@@ -58,6 +59,7 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
+app.use('/api', mockRouter);
 app.use('/', viewRouters);
 app.use('/api/products', productsRouters);
 app.use('/api/carts', cartRouter);
@@ -74,12 +76,6 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 const productManager = new ProductManager(io);
 
-/*  const emailTemplate = `<div>
-<h1>Bienvenido!!</h1>
-<img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/2x1_SuperMarioHub.jpg" style="width:250px"/>
-<p>Ya puedes empezar a usar nuestros servicios</p>
-<a href="https://www.google.com/">Explorar</a>
-</div>`; */
 
 io.on('connection', async (socket) => {
   try {
