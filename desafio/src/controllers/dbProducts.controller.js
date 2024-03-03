@@ -1,4 +1,8 @@
 import { dbProductService } from "../repository/index.js";
+import { errorHandler } from "../midleware/errorHandler.js";
+import { EError } from "../enums/EError.js";
+import { CustomError } from "../services/customError.service.js";
+import { generateProductParam } from "../services/productErrorParam.js";
 
 async function getAllProducts(req, res) {
   try {
@@ -35,11 +39,18 @@ async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
-    const createdProduct = await dbProductService.createProduct(newProduct);
+    const createdProduct = await dbProductService.addProduct(newProduct);
     io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
     res.json(createdProduct);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    
+    if (error.code === EError.PRODUCT_CREATION_ERROR) {
+      
+      res.status(400).json({ error: 'Error al crear el producto en la base de datos: ' + error.message });
+    } else {
+      
+      res.status(500).json({ error: 'Error interno del servidor: ' + error.message });
+    }
   }
 }
 

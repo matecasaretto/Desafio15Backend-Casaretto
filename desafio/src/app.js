@@ -14,6 +14,7 @@ import productModel from './dao/models/product.model.js';
 import passport from 'passport';
 import mockRouter from './routes/mockRouter.js';
 
+import { errorHandler } from './midleware/errorHandler.js';
 import {config} from "./config/config.js"
 
 import dbProductsRouters from './routes/dbProducts.routes.js';
@@ -27,6 +28,7 @@ const app = express();
 const PORT = config.server.port;
 
 app.use(express.json());
+app.use(errorHandler); 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'))
 

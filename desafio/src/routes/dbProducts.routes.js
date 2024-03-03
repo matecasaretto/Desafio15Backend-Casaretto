@@ -6,7 +6,7 @@ import { checkRole } from '../midleware/authorizationMiddleware.js';
 const router = Router();
 
 router.get("/", getAllProducts);
-router.post("/", checkRole('admin'), addProduct); 
+router.post("/", addProduct); 
 router.get("/:productId", getProductById);
 router.delete("/:productId",checkRole('admin'), deleteProductById); 
 router.put("/:productId", updateProduct); 

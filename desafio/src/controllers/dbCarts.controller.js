@@ -11,6 +11,10 @@ import Ticket from '../dao/models/ticket.model.js';
 import productModel from '../dao/models/product.model.js';
 import cartModel from '../dao/models/cart.model.js';
 
+import { EError } from '../enums/EError.js';
+import { errorHandler } from '../midleware/errorHandler.js';
+import { CustomError } from '../services/customError.service.js';
+import { generateCartParam } from '../services/cartError.serice.js';
 
 
 function generateUniqueCode() {
@@ -143,10 +147,10 @@ async function getCartById(req, res) {
 
 async function createCart(req, res) {
   try {
-    const newCart = await dbCartService.createCart();
-    res.json(newCart);
+      const newCart = await dbCartService.createCart();
+      res.json(newCart);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      throw CustomError.createError({ name: 'CartCreationError', message: 'Error al crear el carrito', errorCode: EError.CART_CREATION_ERROR, cause: error });
   }
 }
 
