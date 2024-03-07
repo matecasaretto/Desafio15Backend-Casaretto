@@ -40,7 +40,7 @@ const prodLogger = winston.createLogger({
     ]
 });
 
-
+// Middleware para añadir el logger a la solicitud
 const addLogger = (req, res, next) => {
     const currentEnv = process.env.NODE_ENV || "development";
     if (currentEnv === "development") {

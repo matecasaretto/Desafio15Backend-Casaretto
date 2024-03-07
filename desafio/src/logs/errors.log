@@ -1,0 +1,18 @@
+{"level":"http","message":"/loggerTest - method: GET"}
+{"level":"debug","message":"Mensaje de debug"}
+{"level":"http","message":"Mensaje HTTP"}
+{"level":"info","message":"Mensaje de información"}
+{"level":"warn","message":"Mensaje de advertencia"}
+{"level":"error","message":"Mensaje de error"}
+{"level":"http","message":"/loggerTest - method: GET"}
+{"level":"debug","message":"Mensaje de debug"}
+{"level":"http","message":"Mensaje HTTP"}
+{"level":"info","message":"Mensaje de información"}
+{"level":"warn","message":"Mensaje de advertencia"}
+{"level":"error","message":"Mensaje de error"}
+{"level":"http","message":"/loggerTest - method: GET"}
+{"level":"debug","message":"Mensaje de debug"}
+{"level":"http","message":"Mensaje HTTP"}
+{"level":"info","message":"Mensaje de información"}
+{"level":"warn","message":"Mensaje de advertencia"}
+{"level":"error","message":"Mensaje de error"}
