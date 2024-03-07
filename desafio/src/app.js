@@ -16,6 +16,7 @@ import mockRouter from './routes/mockRouter.js';
 
 import { errorHandler } from './midleware/errorHandler.js';
 import {config} from "./config/config.js"
+import { addLogger, devLogger, prodLogger } from './config/logger.js';
 
 import dbProductsRouters from './routes/dbProducts.routes.js';
 import dbCartsRoutes from './routes/dbCarts.routes.js';
@@ -71,8 +72,22 @@ app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);
 app.use('/api/dbmessage', dbMessageRouters);
 
+
 const httpServer = app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto: ${PORT}`);
+});
+
+app.use(addLogger);
+
+app.get('/loggerTest', (req, res) => {
+  req.logger.debug('Mensaje de debug');
+  req.logger.http('Mensaje HTTP');
+  req.logger.info('Mensaje de información');
+  req.logger.warn('Mensaje de advertencia');
+  req.logger.error('Mensaje de error');
+  req.logger.fatal('Mensaje fatal');
+
+  res.send('Logs probados. Verifica la consola o los archivos de registro según la configuración del entorno.');
 });
 
 const io = new Server(httpServer);
