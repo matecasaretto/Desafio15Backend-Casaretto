@@ -2,11 +2,15 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt"
 import {Faker, es, en} from "@faker-js/faker"
+import jwt from "jsonwebtoken"
+import { config } from "./config/config.js";
 
 export const customFaker = new Faker({locale: [en]})
 
 const {commerce, image, database, string, internet, person, phone, lorem} = customFaker;
 
+const __filename = fileURLToPath(import.meta.url);
+export const __dirname = dirname(__filename);
 
 export const generateProduct = () => {
     return {
@@ -30,9 +34,33 @@ export const generateMockProducts = (count = 100) => {
     return products;
 };
 
+export const isValidPassword = (password, user)=>{
+    return bcrypt.compareSync(password, user.password)
+};
+
+export const generateEmailToken = (email, expireTime) => {
+    try {
+        const token = jwt.sign({ email }, config.jwt.SECRET, { expiresIn: expireTime });
+        console.log("Token generado:", token);
+        return token;
+    } catch (error) {
+        console.log("Error al generar el token:", error.message);
+        return null;
+    }
+};
+
+export const verifyEmailToken = (token) => {
+    try {
+        const info = jwt.verify(token, config.jwt.SECRET);
+        console.log(info);
+        return info.email;
+    } catch (error) {
+        console.log(error.message);
+        return null;
+    }
+};
+
 export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 export const validatePassword = (password, user) => bcrypt.compareSync(password, user.password);
 
-const __filename = fileURLToPath(import.meta.url);
-export const __dirname = dirname(__filename);
 

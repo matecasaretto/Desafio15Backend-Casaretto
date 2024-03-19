@@ -1,6 +1,10 @@
 import userModel from "../dao/models/user.model.js";
 import cartModel from "../dao/models/cart.model.js";
 import { createHash } from "../utils.js";
+import MaillingService from '../services/mailing.js';
+
+
+const mailer = new MaillingService();
 
 async function register(req, res) {
   try {
@@ -30,6 +34,15 @@ async function register(req, res) {
 
     // Guardar los cambios en el usuario
     await user.save(); 
+
+    // Enviar correo electrónico de confirmación de registro
+    const from = 'CoderTes'; // Dirección de correo del remitente
+    const to = 'fumet23@gmail.com'; // Dirección de correo del destinatario (correo del usuario registrado)
+    const subject = 'Confirmación de registro'; // Asunto del correo
+    const html = '<p>¡Gracias por registrarte en nuestra aplicación!</p>'; // Contenido HTML del correo
+
+    // Enviar el correo electrónico utilizando el servicio de mailing
+    await mailer.sendSimpleMail(from, to, subject, html);
 
     res.send({
       status: "success",

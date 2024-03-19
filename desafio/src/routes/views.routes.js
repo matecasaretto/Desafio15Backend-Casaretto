@@ -1,5 +1,6 @@
 import express from 'express';
 import { checkRole } from '../midleware/authorizationMiddleware.js';
+import { verifyEmailTokenMW } from '../midleware/authorizationMiddleware.js';
 
 import {
   home,
@@ -9,7 +10,7 @@ import {
   realTimeProducts,
   chat,
   register,
-  login,
+  login, 
   profile,
   resetPassword
 } from '../controllers/views.controller.js';
@@ -39,6 +40,14 @@ router.get('/chat', checkRole('user'), chat);
 router.get('/register', publicAccess, register);
 router.get('/login', publicAccess, login);
 router.get('/profile', profile);
-router.get('/resetPassword', resetPassword);
+/* router.get('/resetPassword', resetPassword);
+ */
+router.get('/forgot-password', (req,res)=>{
+  res.render("forgotPassword")
+})
+router.get('/reset-password',(req,res)=>{
+  const token = req.query.token
+  res.render("resetPassword",{token})
+})
 
 export default router;
