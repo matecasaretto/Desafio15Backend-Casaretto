@@ -7,11 +7,11 @@ class UserController{
             const userId = req.params.uid;
             //verificar si el usuario existe en la base de datos
             const user = await User.findById(userId);
-            const userRol = user.rol;
+            const userRol = user.role;
             if(userRol === "user"){
-                user.rol = "premium"
+                user.role = "premium"
             } else if(userRol === "premium"){
-                user.rol = "user"
+                user.role = "user"
             } else {
                 return res.json({status:"error", message:"no es posible cambiar el role del usuario"});
             }
