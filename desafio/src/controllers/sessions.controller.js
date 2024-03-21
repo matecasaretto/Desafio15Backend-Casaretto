@@ -26,6 +26,11 @@ async function register(req, res) {
     } else {
       user.role = "user";
     }
+    if (email === "usuarioPremium@premium.com" && password === "12345") {
+      user.role = "premium";
+    } else {
+      user.role = "user";
+    }
 
     // Crear un nuevo carrito para el usuario
     const newCart = new cartModel(); 

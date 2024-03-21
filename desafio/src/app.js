@@ -13,6 +13,7 @@ import messageModel from './dao/models/message.model.js';
 import productModel from './dao/models/product.model.js';
 import passport from 'passport';
 import mockRouter from './routes/mockRouter.js';
+import { usersRouter } from './routes/users.routes.js';
 
 import { errorHandler } from './midleware/errorHandler.js';
 import {config} from "./config/config.js"
@@ -67,6 +68,7 @@ app.use('/', viewRouters);
 app.use('/api/products', productsRouters);
 app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRoutes)
+app.use("/api/users", usersRouter);
 
 app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);

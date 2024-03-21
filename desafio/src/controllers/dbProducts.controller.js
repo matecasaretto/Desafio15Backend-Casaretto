@@ -39,16 +39,23 @@ async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
+    
+    const user = await UserModel.findById(req.user.id);
+    if (!user || user.role !== 'premium') {
+      return res.status(403).json({ error: 'Solo los usuarios premium pueden agregar productos.' });
+    }
+
+    newProduct.owner = user.email;
+
     const createdProduct = await dbProductService.addProduct(newProduct);
+    
     io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
+
     res.json(createdProduct);
   } catch (error) {
-    
     if (error.code === EError.PRODUCT_CREATION_ERROR) {
-      
       res.status(400).json({ error: 'Error al crear el producto en la base de datos: ' + error.message });
     } else {
-      
       res.status(500).json({ error: 'Error interno del servidor: ' + error.message });
     }
   }
