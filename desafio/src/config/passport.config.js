@@ -29,7 +29,7 @@ const initializePassport = () => {
                     email,
                     age,
                     password: createHash(password),
-                    role: "user", // Cambiar de "Usuario" a "user"
+                    role: "user", 
                     cart: newCart._id,
                 });
   

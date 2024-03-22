@@ -27,11 +27,11 @@ export default class MaillingService {
 }
 
 export const sendRecoveryPass = async (userEmail, token) => {
-    const link = `http://localhost:8096/reset-password?token=${token}`; // Corregí el error de escritura en "localhost"
+    const link = `http://localhost:8096/reset-password?token=${token}`; 
     try {
-        const maillingService = new MaillingService(); // Crea una instancia de tu servicio de correo electrónico
+        const maillingService = new MaillingService(); 
         await maillingService.sendSimpleMail(
-            config.mailing.USER, // Corregí el campo "from" para que sea la dirección de correo del remitente
+            config.mailing.USER, 
             userEmail,
             "Reestablecer Contraseña",
             `
@@ -48,6 +48,6 @@ export const sendRecoveryPass = async (userEmail, token) => {
         console.log("Correo enviado correctamente");
     } catch (error) {
         console.log("Error al enviar el correo:", error.message);
-        throw error; // Puedes manejar el error según sea necesario
+        throw error; 
     }
 }
