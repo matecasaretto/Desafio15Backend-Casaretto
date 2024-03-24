@@ -7,6 +7,7 @@ export const authenticateRole = (role) => {
     return (req, res, next) => {
         try {
             const user = req.user; // Obtener el usuario de la sesión
+            console.log('Información del usuario:', user); // Imprimir información sobre el usuario
             if (!user || !user._id) { // Verificar que el usuario y su _id no sean undefined
                 throw new Error('Usuario no autenticado');
             }

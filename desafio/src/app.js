@@ -52,7 +52,7 @@ app.use(session({
 
 inicializePassport()
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
 
 app.engine('handlebars', engine({
@@ -61,17 +61,18 @@ app.engine('handlebars', engine({
     allowProtoMethodsByDefault: true,
   },
 }));
-app.set('view engine', 'handlebars');
-app.set('views', __dirname + '/views');
 
 app.use('/api', mockRouter);
 app.use('/', viewRouters);
 app.use('/api/sessions', sessionRoutes)
 app.use("/api/users", usersRouter);
 
-app.use('/api/dbproducts', authenticateRole('premium'), dbProductsRouters);
+app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);
 app.use('/api/dbmessage', dbMessageRouters);
+
+app.set('view engine', 'handlebars');
+app.set('views', __dirname + '/views');
 
 
 const httpServer = app.listen(PORT, () => {

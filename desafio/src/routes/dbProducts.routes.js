@@ -5,7 +5,7 @@ import { authenticateRole } from "../midleware/authorizationMiddleware.js";
 
 const router = Router();
 
-router.get("/", getAllProducts);
+router.get("/", authenticateRole('premium'), getAllProducts);
 router.post("/", authenticateRole('premium'), addProduct); 
 router.get("/:productId", getProductById);
 router.delete("/:productId", deleteProductById); 
