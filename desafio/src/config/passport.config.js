@@ -2,7 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 
-import userModel from "../dao/models/user.model.js";
+import User from "../dao/models/user.model.js";
 import cartModel from "../dao/models/cart.model.js";
 import { createHash, validatePassword } from "../utils.js";
 
@@ -14,7 +14,7 @@ const initializePassport = () => {
         async (req, email, password, done) => {
             const { first_name, last_name, age } = req.body;
             try {
-                let user = await userModel.findOne({ email });
+                let user = await User.findOne({ email });
                 if (user) {
                     console.log('Usuario ya registrado');
                     return done(null, false, { message: 'El usuario ya está registrado' });
@@ -23,7 +23,7 @@ const initializePassport = () => {
                 const newCart = new cartModel();
                 await newCart.save();
   
-                const newUser = new userModel({
+                const newUser = new User({
                     first_name,
                     last_name,
                     email,
@@ -45,7 +45,7 @@ const initializePassport = () => {
       { usernameField: "email" },
       async (email, password, done) => {
           try {
-              const user = await userModel.findOne({ email });
+              const user = await User.findOne({ email });
               if (!user) {
                   return done(null, false, { message: "Usuario no encontrado" });
               }
@@ -66,7 +66,7 @@ const initializePassport = () => {
     });
     
     passport.deserializeUser(async (id, done) => {
-        let user = await userModel.findById(id);
+        let user = await User.findById(id);
         done(null, user);
     });
 
@@ -77,31 +77,25 @@ const initializePassport = () => {
     }, async(accesToken, refreshToken, profile, done) => {
         try {
             console.log(profile._json.name);
-            const first_name = profile._json.name
-            let email;
-            if (!profile._json.email) {
-                email = profile.username
-            }
-
-            let user = await userModel.findOne({ email: profile._json.email });
+            const first_name = profile._json.name;
+            const email = profile._json.email || profile.username; 
+    
+            let user = await User.findOne({ email });
             if (user) {
                 console.log('Usuario ya registrado');
-                return done(null, false);
+                return done(null, user);
             }
-
-            const newUser = new userModel({
+    
+            
+            const newUser = new User({
                 first_name,
-                last_name,
                 email,
-                age,
-                password: createHash(password),
                 role: "user", 
-                cart: newCart._id,
             });
-
-            const result = await userModel.create(newUser);
-            return done (null, result);
-
+    
+            const result = await newUser.save();
+            return done(null, result);
+    
         } catch (error) {
             return done(error)
         }

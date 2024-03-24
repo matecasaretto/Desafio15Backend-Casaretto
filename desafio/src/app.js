@@ -25,6 +25,7 @@ import { dbMessageRouters } from './routes/dbMessages.routes.js';
 import { sessionRoutes } from './routes/sessions.routes.js';
 import inicializePassport from './config/passport.config.js';
 
+import { authenticateRole } from './midleware/authorizationMiddleware.js';
 console.log(config)
 const app = express();
 const PORT = config.server.port;
@@ -65,12 +66,10 @@ app.set('views', __dirname + '/views');
 
 app.use('/api', mockRouter);
 app.use('/', viewRouters);
-app.use('/api/products', productsRouters);
-app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRoutes)
 app.use("/api/users", usersRouter);
 
-app.use('/api/dbproducts', dbProductsRouters);
+app.use('/api/dbproducts', authenticateRole('premium'), dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);
 app.use('/api/dbmessage', dbMessageRouters);
 

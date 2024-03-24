@@ -4,6 +4,10 @@ import { EError } from "../enums/EError.js";
 import { CustomError } from "../services/customError.service.js";
 import { generateProductParam } from "../services/productErrorParam.js";
 
+
+
+import User from "../dao/models/user.model.js";
+
 async function getAllProducts(req, res) {
   try {
     const { limit = 10, page = 1, query, order, category } = req.query;
@@ -39,17 +43,13 @@ async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
-    
-    const user = await UserModel.findById(req.user.id);
-    if (!user || user.role !== 'premium') {
-      return res.status(403).json({ error: 'Solo los usuarios premium pueden agregar productos.' });
-    }
-
-    newProduct.owner = user.email;
+   
+    newProduct.owner = req.body.email; 
 
     const createdProduct = await dbProductService.addProduct(newProduct);
     
-    io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
+/*     io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
+ */
 
     res.json(createdProduct);
   } catch (error) {

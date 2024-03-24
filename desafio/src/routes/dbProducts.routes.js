@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { getAllProducts, addProduct, getProductById, deleteProductById, updateProduct } from "../controllers/dbProducts.controller.js";
-import { checkRole } from '../midleware/authorizationMiddleware.js'; 
+import { authenticateRole } from "../midleware/authorizationMiddleware.js";
+
 
 const router = Router();
 
 router.get("/", getAllProducts);
-router.post("/", checkRole('premium'), addProduct); 
+router.post("/", authenticateRole('premium'), addProduct); 
 router.get("/:productId", getProductById);
-router.delete("/:productId",checkRole('admin'), deleteProductById); 
+router.delete("/:productId", deleteProductById); 
 router.put("/:productId", updateProduct); 
 
 export default router;

@@ -1,6 +1,6 @@
 import express from 'express';
-import { checkRole } from '../midleware/authorizationMiddleware.js';
 import { verifyEmailTokenMW } from '../midleware/authorizationMiddleware.js';
+import { authenticateRole } from '../midleware/authorizationMiddleware.js';
 
 import {
   home,
@@ -12,7 +12,6 @@ import {
   register,
   login, 
   profile,
-  resetPassword
 } from '../controllers/views.controller.js';
 
 const router = express.Router();
@@ -36,12 +35,11 @@ router.post('/carts/:cartId/add-to-cart', addToCart);
 router.get('/dbproducts', dbProducts);
 router.get('/carts/:cartId', dbCart);
 router.get('/realtimeproducts', realTimeProducts);
-router.get('/chat', checkRole('user'), chat);
+router.get('/chat', authenticateRole('user'), chat); 
 router.get('/register', publicAccess, register);
 router.get('/login', publicAccess, login);
 router.get('/profile', profile);
-/* router.get('/resetPassword', resetPassword);
- */
+
 router.get('/forgot-password', (req,res)=>{
   res.render("forgotPassword")
 })

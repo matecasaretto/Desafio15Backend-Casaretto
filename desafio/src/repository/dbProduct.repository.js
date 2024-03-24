@@ -72,7 +72,7 @@ class DbProductRepository {
         }
     }
 
-    async deleteProduct(id) {
+    async deleteProductById(id) {
         try {
             const result = await productModel.deleteOne({ _id: id });
             if (result.deletedCount > 0) {

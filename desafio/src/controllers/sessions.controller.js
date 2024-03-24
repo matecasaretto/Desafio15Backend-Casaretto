@@ -1,8 +1,8 @@
+// Importar el modelo de usuario y otros módulos necesarios
 import userModel from "../dao/models/user.model.js";
 import cartModel from "../dao/models/cart.model.js";
 import { createHash } from "../utils.js";
 import MaillingService from '../services/mailing.js';
-
 
 const mailer = new MaillingService();
 
@@ -11,7 +11,7 @@ async function register(req, res) {
     const { email, password } = req.body;
 
     // Buscar el usuario por correo electrónico
-    const user = await userModel.findOne({ email });
+    let user = await userModel.findOne({ email });
 
     if (!user) {
       return res.status(400).send({
@@ -20,14 +20,10 @@ async function register(req, res) {
       });
     }
 
-    // Verificar si es un usuario admin
-    if (email === "adminCoder@coder.com" && password === "adminCoder123") {
-      user.role = "admin";
-    } else {
-      user.role = "user";
-    }
-    if (email === "usuarioPremium@premium.com" && password === "12345") {
-      user.role = "premium";
+    // Verificar si es un usuario admin o premium
+    if ((email === "adminCoder@coder.com" && password === "adminCoder123") ||
+        (email === "usuarioPremium@premium.com" && password === "12345")) {
+      user.role = (email === "adminCoder@coder.com") ? "admin" : "premium";
     } else {
       user.role = "user";
     }
@@ -68,10 +64,6 @@ async function login(req, res) {
       return res.status(400).send({ status: "error" });
     }
 
-    if (req.user.email === "adminCoder@coder.com" && req.user.password === "adminCoder123") {
-      req.user.role = "admin";
-    }
-
     let cartInfo;
     if (req.user.cart) {
       const cart = await cartModel.findById(req.user.cart).populate('products.product');
@@ -82,6 +74,8 @@ async function login(req, res) {
       }
     }
     console.log('Información del carrito:', cartInfo);
+    
+    // Configurar la sesión con la información del usuario
     req.session.user = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
@@ -90,6 +84,8 @@ async function login(req, res) {
       role: req.user.role,
       cart: cartInfo, 
     };
+    
+    // Enviar la respuesta con el usuario autenticado y la sesión configurada
     res.send({
       status: "success",
       payload: req.session.user
