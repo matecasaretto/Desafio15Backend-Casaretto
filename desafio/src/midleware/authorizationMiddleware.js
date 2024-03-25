@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
 import User from "../dao/models/user.model.js";
+import productModel from "../dao/models/product.model.js";
 
 
 export const authenticateRole = (role) => {
-    return (req, res, next) => {
+    return async (req, res, next) => {
         try {
             const user = req.user; // Obtener el usuario de la sesión
             console.log('Información del usuario:', user); // Imprimir información sobre el usuario
@@ -21,6 +22,62 @@ export const authenticateRole = (role) => {
             res.status(401).json({ error: error.message });
         }
     };
+};
+
+export const authorizeProductModification = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const productId = req.params.productId;
+
+        if (!user || !user._id) {
+            throw new Error('Usuario no autenticado');
+        }
+
+        // Obtener el producto por su ID
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            throw new Error('Producto no encontrado');
+        }
+
+        // Verificar si el usuario tiene permiso para modificar o eliminar el producto
+        if (user.role === 'admin' || (user.role === 'premium' && product.owner === user.email)) {
+            next();
+        } else {
+            throw new Error('No autorizado para modificar o eliminar este producto');
+        }
+    } catch (error) {
+        console.error('Error en authorizeProductModification:', error.message);
+        res.status(401).json({ error: error.message });
+    }
+};
+
+export const authorizeProductDeletion = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const productId = req.params.productId;
+
+        if (!user || !user._id) {
+            throw new Error('Usuario no autenticado');
+        }
+
+        // Obtener el producto por su ID
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            throw new Error('Producto no encontrado');
+        }
+
+        // Verificar si el usuario tiene permiso para eliminar el producto
+        if (user.role === 'admin' || (user.role === 'premium' && product.owner === user.email)) {
+            next();
+        } else {
+            throw new Error('No autorizado para eliminar este producto');
+        }
+    } catch (error) {
+        console.error('Error en authorizeProductDeletion:', error.message);
+        res.status(401).json({ error: error.message });
+    }
 };
 
 export const verifyEmailTokenMW = () => {

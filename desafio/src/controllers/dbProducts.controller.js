@@ -3,6 +3,7 @@ import { errorHandler } from "../midleware/errorHandler.js";
 import { EError } from "../enums/EError.js";
 import { CustomError } from "../services/customError.service.js";
 import { generateProductParam } from "../services/productErrorParam.js";
+import productModel from "../dao/models/product.model.js";
 
 
 
@@ -43,16 +44,16 @@ async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
-   
-    newProduct.owner = req.body.email; 
+    // Asignando el correo electrónico del usuario autenticado al campo 'owner'
+    newProduct.owner = req.user.email;
 
+    // Agregar el producto utilizando el servicio correspondiente
     const createdProduct = await dbProductService.addProduct(newProduct);
     
-/*     io.emit('realTimeProductsUpdate', { products: 'lista actualizada de productos' });
- */
-
+    // Respondiendo con el producto creado
     res.json(createdProduct);
   } catch (error) {
+    // Manejo de errores
     if (error.code === EError.PRODUCT_CREATION_ERROR) {
       res.status(400).json({ error: 'Error al crear el producto en la base de datos: ' + error.message });
     } else {
