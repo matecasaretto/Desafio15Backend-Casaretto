@@ -1,31 +1,41 @@
+//Server
 import express from 'express';
-import session from 'express-session'
-import MongoStore from 'connect-mongo'
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
-import { __dirname } from './utils.js';
-import viewRouters from './routes/views.routes.js';
-import { productsRouters } from './routes/products.routes.js';
-import { cartRouter } from './routes/carts.routes.js';
-import ProductManager from './dao/managers/ProductManager.js';
+import swaggerUi from "swagger-ui-express";
 import mongoose from 'mongoose';
+import passport from 'passport';
+import { __dirname } from './utils.js';
+
+//Managers
+import ProductManager from './dao/managers/ProductManager.js';
+
+//Models
 import messageModel from './dao/models/message.model.js';
 import productModel from './dao/models/product.model.js';
-import passport from 'passport';
-import mockRouter from './routes/mockRouter.js';
-import { usersRouter } from './routes/users.routes.js';
 
+//Configs
 import { errorHandler } from './midleware/errorHandler.js';
-import {config} from "./config/config.js"
+import { config } from "./config/config.js";
 import { addLogger, devLogger, prodLogger } from './config/logger.js';
+import { swaggerSpecs } from './config/docConfig.js';
 
+//Routes
 import dbProductsRouters from './routes/dbProducts.routes.js';
 import dbCartsRoutes from './routes/dbCarts.routes.js';
 import { dbMessageRouters } from './routes/dbMessages.routes.js';
 import { sessionRoutes } from './routes/sessions.routes.js';
 import inicializePassport from './config/passport.config.js';
+import mockRouter from './routes/mockRouter.js';
+import { usersRouter } from './routes/users.routes.js';
+import viewRouters from './routes/views.routes.js';
 
-import { authenticateRole } from './midleware/authorizationMiddleware.js';
+
+
+
+
 console.log(config)
 const app = express();
 const PORT = config.server.port;
@@ -67,9 +77,15 @@ app.use('/', viewRouters);
 app.use('/api/sessions', sessionRoutes)
 app.use("/api/users", usersRouter);
 
+
 app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);
 app.use('/api/dbmessage', dbMessageRouters);
+
+//Endpointa para la documentacion
+app.use("/api/docs",swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+
 
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
