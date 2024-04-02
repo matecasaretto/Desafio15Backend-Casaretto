@@ -22,9 +22,9 @@ class DbProductManager {
 
       const sortOption = sortOrder === 'desc' ? { price: -1 } : { price: 1 };
 
-      const paginacion = await productModel.paginate(filtro, { ...options, sort: sortOption });
+      const productos = await productModel.find(filtro, null, { sort: sortOption });
 
-      return paginacion;
+      return productos;
     } catch (error) {
       console.error('Error al obtener productos desde MongoDB:', error.message);
       throw error;
