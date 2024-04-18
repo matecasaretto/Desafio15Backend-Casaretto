@@ -4,7 +4,7 @@ import { upload } from "../midleware/multer.js";
 
 const router = Router();
 
-router.post("/:uid/documents", upload.array('product'), UserController.uploadDocuments);
+router.post("/:uid/documents", upload.any(), UserController.uploadDocuments);
 
 router.put("/premium/:uid", UserController.changeRol);
 
