@@ -1,9 +1,11 @@
 import { Router } from "express";
-import User from "../dao/models/user.model.js";
 import { UserController } from "../controllers/users.controller.js";
+import { upload } from "../midleware/multer.js";
 
-const router =  Router();
+const router = Router();
 
-router.put("/premium/:uid" , UserController.changeRol);
+router.post("/:uid/documents", upload.array('product'), UserController.uploadDocuments);
 
-export {router as usersRouter};
+router.put("/premium/:uid", UserController.changeRol);
+
+export { router as usersRouter };

@@ -11,8 +11,24 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin', 'premium'], 
     default: 'user' 
   },
-  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }, 
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
+  documents: [
+    {
+      name: String,
+      reference: String
+    }
+  ],
+  last_connection: Date
 });
+
+
+userSchema.methods.login = function() {
+  this.last_connection = new Date();
+};
+
+userSchema.methods.logout = function() {
+  this.last_connection = new Date();
+};
 
 const User = mongoose.model('User', userSchema);
 

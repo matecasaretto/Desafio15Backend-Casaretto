@@ -4,6 +4,8 @@ import bcrypt from "bcrypt"
 import {Faker, es, en} from "@faker-js/faker"
 import jwt from "jsonwebtoken"
 import { config } from "./config/config.js";
+import multer from "multer"
+import { resolve } from "path";
 
 export const customFaker = new Faker({locale: [en]})
 
@@ -11,6 +13,7 @@ const {commerce, image, database, string, internet, person, phone, lorem} = cust
 
 const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(__filename);
+
 
 export const generateProduct = () => {
     return {
