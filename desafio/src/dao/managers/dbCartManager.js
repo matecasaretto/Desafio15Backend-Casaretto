@@ -128,18 +128,18 @@ class DbCartManager {
 
   async getCartById(cartId) {
     try {
-      const cart = await cartModel.findOne({ id: cartId });
+        const cart = await cartModel.findOne({ _id: cartId });
   
-      if (!cart) {
-        throw new Error(`Carrito con ID ${cartId} no encontrado.`);
-      }
+        if (!cart) {
+            throw new Error(`Carrito con ID ${cartId} no encontrado.`);
+        }
   
-      return cart;
+        return cart;
     } catch (error) {
-      console.error(`Error al obtener el carrito con ID ${cartId}: ${error.message}`);
-      throw error;
+        console.error(`Error al obtener el carrito con ID ${cartId}: ${error.message}`);
+        throw error;
     }
-  }
+}
 
   async deleteAllProductsFromCart(cartId) {
     try {

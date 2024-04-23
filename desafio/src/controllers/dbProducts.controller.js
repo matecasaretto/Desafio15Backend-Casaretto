@@ -6,9 +6,6 @@ import { generateProductParam } from "../services/productErrorParam.js";
 import productModel from "../dao/models/product.model.js";
 
 
-
-import User from "../dao/models/user.model.js";
-
 async function getAllProducts(req, res) {
   try {
     const { limit = 10, page = 1, query, order, category } = req.query;
@@ -44,16 +41,10 @@ async function addProduct(req, res) {
   const newProduct = req.body;
 
   try {
-    // Asignando el correo electrónico del usuario autenticado al campo 'owner'
     newProduct.owner = req.user.email;
-
-    // Agregar el producto utilizando el servicio correspondiente
     const createdProduct = await dbProductService.addProduct(newProduct);
-    
-    // Respondiendo con el producto creado
     res.json(createdProduct);
   } catch (error) {
-    // Manejo de errores
     if (error.code === EError.PRODUCT_CREATION_ERROR) {
       res.status(400).json({ error: 'Error al crear el producto en la base de datos: ' + error.message });
     } else {

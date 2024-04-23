@@ -2,16 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Listado de Productos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+    form {
+      display: inline-block;
+    }
+    nav {
+      text-align: center;
+      padding: 10px 0;
+    }
+    nav ul {
+      display: inline;
+    }
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Listado de Productos</h1>
+    <nav>
+      <ul>
+        <li><a href="/profile">Perfil</a></li>
+        <li><a href="/chat">Chat</a></li>
+        <li><a href="/carts/66282440757b2f94d3a96195">Carrito</a></li>
+      </ul>
+    </nav>
+    <h1>Listado de Productos</h1>
   {{#if user}}
-    <strong>Bienvenido, {{user.first_name}} {{user.last_name}}, estos son nuestros productos para ti!!</strong>  {{/if}}
+    <strong>Bienvenido, {{user.first_name}} {{user.last_name}}, estos son nuestros productos para ti!!</strong>
+  {{/if}}
   <ul>
-    {{#each products.docs}}
+    {{#each products}}
       <li>
         <strong>ID:</strong> {{this._id}}<br>
         <strong>Título:</strong> {{this.title}}<br>
@@ -21,8 +62,26 @@
         <strong>Código:</strong> {{this.code}}<br>
         <strong>Stock:</strong> {{this.stock}}<br>
         <strong>Estado:</strong> {{this.status}}<br>
-      </li>
+
+       
+        <form id="addToCartForm-{{this._id}}" action="/api/dbcarts/66282440757b2f94d3a96195/products" method="post">
+          <input type="hidden" name="productId" value="{{this._id}}">
+          <input type="number" name="quantity" value="1" min="1">
+          <input type="submit" value="Agregar al Carrito">
+        </form>
+      </li> 
     {{/each}}
   </ul>
+
+  {{#if products.hasPrevPage}}
+    <a href="{{products.prevLink}}">Página anterior</a>
+  {{/if}}
+
+  {{#if products.hasNextPage}}
+    <a href="{{products.nextLink}}">Página siguiente</a>
+  {{/if}}
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/addCart.js"></script>
 </body>
 </html>

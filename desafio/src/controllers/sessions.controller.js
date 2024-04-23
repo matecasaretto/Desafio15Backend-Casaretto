@@ -10,7 +10,7 @@ async function register(req, res) {
   try {
     const { email, password } = req.body;
 
-    // Buscar el usuario por correo electrónico
+    
     let user = await userModel.findOne({ email });
 
     if (!user) {
@@ -20,7 +20,7 @@ async function register(req, res) {
       });
     }
 
-    // Verificar si es un usuario admin o premium
+   
     if ((email === "adminCoder@coder.com" && password === "adminCoder123") ||
         (email === "usuarioPremium@premium.com" && password === "12345")) {
       user.role = (email === "adminCoder@coder.com") ? "admin" : "premium";
@@ -28,21 +28,21 @@ async function register(req, res) {
       user.role = "user";
     }
 
-    // Crear un nuevo carrito para el usuario
+   
     const newCart = new cartModel(); 
     await newCart.save(); 
     user.cart = newCart._id; 
 
-    // Guardar los cambios en el usuario
+    
     await user.save(); 
 
-    // Enviar correo electrónico de confirmación de registro
-    const from = 'CoderTes'; // Dirección de correo del remitente
-    const to = 'fumet23@gmail.com'; // Dirección de correo del destinatario (correo del usuario registrado)
-    const subject = 'Confirmación de registro'; // Asunto del correo
-    const html = '<p>¡Gracias por registrarte en nuestra aplicación!</p>'; // Contenido HTML del correo
+   
+    const from = 'CoderTes'; 
+    const to = 'fumet23@gmail.com'; 
+    const subject = 'Confirmación de registro'; 
+    const html = '<p>¡Gracias por registrarte en nuestra aplicación!</p>';
 
-    // Enviar el correo electrónico utilizando el servicio de mailing
+    
     await mailer.sendSimpleMail(from, to, subject, html);
 
     res.send({
@@ -75,7 +75,7 @@ async function login(req, res) {
     }
     console.log('Información del carrito:', cartInfo);
     
-    // Configurar la sesión con la información del usuario
+   
     req.session.user = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
@@ -85,7 +85,7 @@ async function login(req, res) {
       cart: cartInfo, 
     };
     
-    // Enviar la respuesta con el usuario autenticado y la sesión configurada
+   
     res.send({
       status: "success",
       payload: req.session.user

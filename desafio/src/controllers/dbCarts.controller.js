@@ -1,20 +1,10 @@
 import { dbCartService } from '../repository/index.js';
-import { dbProductService } from '../repository/index.js';
-import { dbTicketService } from '../repository/index.js';
 import { v4 as uuidv4 } from 'uuid';
-
-import User from '../dao/models/user.model.js';
-
-import mongoose from 'mongoose';
-
 import Ticket from '../dao/models/ticket.model.js';
 import productModel from '../dao/models/product.model.js';
-import cartModel from '../dao/models/cart.model.js';
-
 import { EError } from '../enums/EError.js';
-import { errorHandler } from '../midleware/errorHandler.js';
 import { CustomError } from '../services/customError.service.js';
-import { generateCartParam } from '../services/cartError.serice.js';
+
 
 
 function generateUniqueCode() {
@@ -113,11 +103,6 @@ export async function purchaseCart(req, res) {
 }
 
 
-
-
-
-
-
 async function getAllCarts(req, res) {
   try {
     const carts = await dbCartService.getCarts();
@@ -129,13 +114,16 @@ async function getAllCarts(req, res) {
 
 async function getCartById(req, res) {
   const { cartId } = req.params;
-  console.log('el id del carrito es:',  cartId )
-
+  
   try {
     const cart = await dbCartService.getCartById(cartId);
 
     if (cart) {
-      res.json(cart); 
+      // Obtener los detalles de los productos del carrito
+      const products = await getProductDetails(cart.products);
+      
+      // Renderizar la vista "cart" con los datos del carrito y los productos
+      res.render('cart', { cart, products });
     } else {
       res.status(404).json({ error: `Carrito con ID ${cartId} no encontrado` });
     }

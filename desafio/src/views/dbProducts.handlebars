@@ -1,42 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Productos</title>
-</head>
-<body>
-  <h1>Lista de Productos</h1>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+  </head>
+  <body>
+    <h1>Lista de Productos</h1>
 
-  {{#each products.payload}}
-    <div>
-      <p>Título: {{title}}</p>
-      <p>Descripción: {{description}}</p>
-      <p>Precio: {{price}}</p>
-      <p>Thumbnail: {{thumbnail}}</p>
-      <p>Código: {{code}}</p>
-      <p>Stock: {{stock}}</p>
-      <p>Estado: {{status}}</p>
-      <p>Categoría: {{category}}</p>
-      <p>Id: {{id}}</p>
-      
-      <form action="/api/dbcarts" method="post">
-        <input type="hidden" name="product" value="{{id}}">
-        <input type="hidden" name="quantity" value="1">
-        <input type="submit" value="Agregar al Carrito">
-      </form>
-    </div>
-  {{/each}}
+    {{#each products.payload}}
+      <div>
+        <p>Título: {{title}}</p>
+        <p>Descripción: {{description}}</p>
+        <p>Precio: {{price}}</p>
+        <p>Thumbnail: {{thumbnail}}</p>
+        <p>Código: {{code}}</p>
+        <p>Stock: {{stock}}</p>
+        <p>Estado: {{status}}</p>
+        <p>Categoría: {{category}}</p>
+        <p>Id: {{id}}</p>
+        
+        <form action="/api/dbcarts" method="post">
+          <input type="hidden" name="product" value="{{id}}">
+          <input type="hidden" name="quantity" value="1">
+          <input type="submit" value="Agregar al Carrito">
+        </form>
+      </div>
+    {{/each}}
 
-  {{#if products.hasPrevPage}}
-    <a href="{{products.prevLink}}">Página anterior</a>
-  {{/if}}
+    {{#if products.hasPrevPage}}
+      <a href="{{products.prevLink}}">Página anterior</a>
+    {{/if}}
 
-  {{#if products.hasNextPage}}
-    <a href="{{products.nextLink}}">Página siguiente</a>
-  {{/if}}
+    {{#if products.hasNextPage}}
+      <a href="{{products.nextLink}}">Página siguiente</a>
+    {{/if}}
 
-  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-  <script src="/js/addCart.js"></script>
-</body>
-</html>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="/js/addCart.js"></script>
+  </body>
+  </html>

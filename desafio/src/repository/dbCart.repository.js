@@ -82,36 +82,26 @@ class DbCartRepository {
         }
     }
 
-    async addProductToCart(cartId, productId, quantity) {
+    async  addProductToCart(cartId, productId, quantity) {
         try {
-            const cart = await cartModel.findOne({ _id: cartId });
-        
-            if (!cart) {
-                throw new Error(`Carrito con ID ${cartId} no encontrado.`);
-            }
-        
-            const existingProduct = cart.products.find((p) => p.product.toString() === productId.toString());
-        
-            if (existingProduct) {
-                existingProduct.quantity += quantity;
-            } else {
-                const product = await productModel.findOne({ _id: productId });
-        
-                if (!product) {
-                    throw new Error(`Producto con ID ${productId} no encontrado.`);
-                }
-        
-                cart.products.push({ product: product._id, quantity });
-            }
-        
-            await cart.save();
-        
-            return cart;
+          const cart = await cartModel.findById(cartId);
+          if (!cart) {
+            throw new Error(`Carrito con ID ${cartId} no encontrado.`);
+          }
+          const existingProduct = cart.products.find(item => item.product.equals(productId));
+          if (existingProduct) {
+            existingProduct.quantity += quantity;
+          } else {
+            cart.products.push({ product: productId, quantity });
+          }
+          await cart.save();
+          return cart;
         } catch (error) {
-            console.error('Error al agregar un producto al carrito en MongoDB:', error.message);
-            throw error;
+          console.error('Error al agregar un producto al carrito en MongoDB:', error.message);
+          throw error;
         }
-    }
+      }
+    
 
     async deleteCart(cartId) {
         try {

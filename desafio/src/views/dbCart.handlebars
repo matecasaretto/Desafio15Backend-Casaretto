@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Detalles del Carrito</title>
 </head>
 <body>
-    
-<h1>Detalles del Carrito</h1>
-
-<p>ID del Carrito: {{ cart.id }}</p>
-
-<h2>Productos en el Carrito:</h2>
-<ul>
-  {{#each cart.products}}
-    <li>
-      <p>Producto: {{ this.product.title }}</p>
-      <p>Cantidad: {{ this.quantity }}</p>
-      <p>Descripción: {{this.description}}</p>       
-    </li>
-  {{/each}}
-</ul>
+    <h1>Detalles del Carrito</h1>
+    <p><strong>ID del Carrito:</strong> {{cart._id}}</p>
+    <p><strong>Fecha de Creación:</strong> {{cart.createdAt}}</p>
+    <p><strong>Productos en el Carrito:</strong></p>
+    <ul>
+        {{#each cart.products}}
+            <li>
+                <p><strong>Producto:</strong> {{this.title}}</p>
+                <p><strong>Descripción:</strong> {{this.description}}</p>
+                <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+                <p><strong>Precio Unitario:</strong> {{this.price}}</p>
+                <img src="{{this.product.thumbnail}}" alt="Thumbnail del Producto">
+            </li>
+        {{/each}}
+    </ul>
+    <p><strong>Total del Carrito:</strong> {{cartTotal}}</p>
 </body>
 </html>

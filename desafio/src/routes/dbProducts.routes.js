@@ -8,7 +8,7 @@ import { authorizeProductDeletion } from "../midleware/authorizationMiddleware.j
 const router = Router();
 
 router.get("/", getAllProducts);
-router.post("/", authenticateRole('premium'), addProduct); 
+router.post("/", /* authenticateRole('premium') */ addProduct); 
 router.get("/:productId", getProductById);
 router.delete("/:productId", authenticateRole('premium'), authorizeProductDeletion, deleteProductById);
 router.put("/:productId", authorizeProductModification, updateProduct);

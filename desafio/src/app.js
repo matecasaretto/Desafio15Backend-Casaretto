@@ -33,9 +33,6 @@ import { usersRouter } from './routes/users.routes.js';
 import viewRouters from './routes/views.routes.js';
 
 
-
-
-
 console.log(config)
 const app = express();
 const PORT = config.server.port;
@@ -47,6 +44,7 @@ app.use(express.static(__dirname + '/public'))
 
 /* const MONGO = "mongodb+srv://codermate2:skatemylife2@codermate2.atlvl2t.mongodb.net/ecomerce"
  */
+
 const connection = mongoose.connect(config.mongo.url);
 
 
@@ -82,7 +80,7 @@ app.use('/api/dbproducts', dbProductsRouters);
 app.use('/api/dbcarts', dbCartsRoutes);
 app.use('/api/dbmessage', dbMessageRouters);
 
-//Endpointa para la documentacion
+
 app.use("/api/docs",swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
