@@ -1,4 +1,8 @@
+const userData = document.getElementById('userData');
+const cartId = userData.dataset.cartId;
+
 const buttons = document.querySelectorAll('input[type="submit"]');
+
 
 buttons.forEach(button => {
     button.addEventListener("click", async function (event) {
@@ -8,7 +12,7 @@ buttons.forEach(button => {
         const quantity = button.parentNode.querySelector('input[name="quantity"]').value;
 
         try {
-            const response = await fetch(`/api/dbcarts/66282440757b2f94d3a96195/products`, { 
+            const response = await fetch(`/api/dbcarts/${cartId}/products`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,7 +24,7 @@ buttons.forEach(button => {
                 throw new Error('No se pudo agregar el producto al carrito');
             }
 
-            alert('Producto agregado al carrito exitosamente, para finalizar compra, dirijete a "carrito" dentro del navegador');
+            alert('Producto agregado al carrito exitosamente, para finalizar compra, dirígete a "carrito" dentro del navegador');
         } catch (error) {
             console.error('Error al agregar el producto al carrito:', error);
         }

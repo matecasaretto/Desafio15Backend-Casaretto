@@ -31,7 +31,7 @@ async function register(req, res) {
    
     const newCart = new cartModel(); 
     await newCart.save(); 
-    user.cart = newCart._id; 
+    user.cart = newCart._id;
 
     
     await user.save(); 
@@ -65,14 +65,14 @@ async function login(req, res) {
     }
 
     let cartInfo;
-    if (req.user.cart) {
-      const cart = await cartModel.findById(req.user.cart).populate('products.product');
-      if (cart) {
-        cartInfo = {
-          id: cart._id,
-        };
-      }
-    }
+if (req.user.cart) {
+  const cart = await cartModel.findById(req.user.cart).populate('products.product');
+  if (cart) {
+    cartInfo = cart._id; 
+  } else {
+    cartInfo = null; 
+  }
+}
     console.log('Información del carrito:', cartInfo);
     
    

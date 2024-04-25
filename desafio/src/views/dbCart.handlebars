@@ -22,5 +22,9 @@
         {{/each}}
     </ul>
     <p><strong>Total del Carrito:</strong> {{cartTotal}}</p>
+
+    <form id="checkoutForm" action="/checkout" method="post">
+        <input type="submit" value="Finalizar Compra">
+    </form>
 </body>
 </html>

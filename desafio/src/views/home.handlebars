@@ -44,7 +44,7 @@
       <ul>
         <li><a href="/profile">Perfil</a></li>
         <li><a href="/chat">Chat</a></li>
-        <li><a href="/carts/66282440757b2f94d3a96195">Carrito</a></li>
+        <li><a href="/carts/{{user.cart}}">Carrito</a></li>
       </ul>
     </nav>
     <h1>Listado de Productos</h1>
@@ -64,7 +64,7 @@
         <strong>Estado:</strong> {{this.status}}<br>
 
        
-        <form id="addToCartForm-{{this._id}}" action="/api/dbcarts/66282440757b2f94d3a96195/products" method="post">
+        <form id="addToCartForm-{{this._id}}" action="/api/dbcarts/{{user.cart}}/products" method="post">
           <input type="hidden" name="productId" value="{{this._id}}">
           <input type="number" name="quantity" value="1" min="1">
           <input type="submit" value="Agregar al Carrito">
@@ -72,7 +72,7 @@
       </li> 
     {{/each}}
   </ul>
-
+  <div id="userData" data-cart-id="{{user.cart}}"></div>
   {{#if products.hasPrevPage}}
     <a href="{{products.prevLink}}">Página anterior</a>
   {{/if}}
