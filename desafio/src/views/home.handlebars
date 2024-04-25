@@ -17,11 +17,22 @@
     ul {
       list-style: none;
       padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between; 
     }
     li {
       border: 1px solid #ccc;
-      margin-bottom: 10px;
+      margin-bottom: 20px; 
       padding: 10px;
+      width: calc(33.33% - 20px); 
+      box-sizing: border-box; 
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block; 
+      margin-bottom: 10px; 
     }
     form {
       display: inline-block;
@@ -54,16 +65,14 @@
   <ul>
     {{#each products}}
       <li>
+        <img src="{{this.thumbnail}}" alt="">
         <strong>ID:</strong> {{this._id}}<br>
         <strong>Título:</strong> {{this.title}}<br>
         <strong>Descripción:</strong> {{this.description}}<br>
         <strong>Precio:</strong> {{this.price}}<br>
-        <strong>Thumbnail:</strong> {{this.thumbnail}}<br>
-        <strong>Código:</strong> {{this.code}}<br>
         <strong>Stock:</strong> {{this.stock}}<br>
-        <strong>Estado:</strong> {{this.status}}<br>
+        
 
-       
         <form id="addToCartForm-{{this._id}}" action="/api/dbcarts/{{user.cart}}/products" method="post">
           <input type="hidden" name="productId" value="{{this._id}}">
           <input type="number" name="quantity" value="1" min="1">

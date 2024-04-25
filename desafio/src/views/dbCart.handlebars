@@ -4,8 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Carrito</title>
+    <style>
+        nav {
+            text-align: center;
+            padding: 10px 0;
+        }
+        nav a {
+            text-decoration: none;
+        }
+        nav ul {
+            display: inline;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
+    <nav>
+        <ul> 
+            <li><a href="/">Home</a></li>
+            <li><a href="/profile">Perfil</a></li>
+            <li><a href="/chat">Chat</a></li>
+            <li><a href="/carts/{{user.cart}}">Carrito</a></li> 
+        </ul>
+    </nav>
     <h1>Detalles del Carrito</h1>
     <p><strong>ID del Carrito:</strong> {{cart._id}}</p>
     <p><strong>Fecha de Creación:</strong> {{cart.createdAt}}</p>
@@ -13,10 +37,10 @@
     <ul>
         {{#each cart.products}}
             <li>
-                <p><strong>Producto:</strong> {{this.title}}</p>
-                <p><strong>Descripción:</strong> {{this.description}}</p>
+                <p><strong>Producto:</strong> {{this.product.title}}</p>
+                <p><strong>Descripción:</strong> {{this.product.description}}</p>
                 <p><strong>Cantidad:</strong> {{this.quantity}}</p>
-                <p><strong>Precio Unitario:</strong> {{this.price}}</p>
+                <p><strong>Precio Unitario:</strong> {{this.product.price}}</p>
                 <img src="{{this.product.thumbnail}}" alt="Thumbnail del Producto">
             </li>
         {{/each}}

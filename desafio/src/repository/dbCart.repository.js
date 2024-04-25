@@ -82,25 +82,35 @@ class DbCartRepository {
         }
     }
 
-    async  addProductToCart(cartId, productId, quantity) {
+    async addProductToCart(cartId, productId, quantity) {
         try {
-          const cart = await cartModel.findById(cartId);
+          const cart = await cartModel.findById(cartId).populate('products.product');
           if (!cart) {
             throw new Error(`Carrito con ID ${cartId} no encontrado.`);
           }
-          const existingProduct = cart.products.find(item => item.product.equals(productId));
+      
+          console.log('Carrito antes de la actualización:', cart);
+      
+          const existingProduct = cart.products.find(item => item.product._id.equals(productId));
           if (existingProduct) {
             existingProduct.quantity += quantity;
           } else {
-            cart.products.push({ product: productId, quantity });
+            const product = await productModel.findById(productId);
+            if (!product) {
+              throw new Error(`Producto con ID ${productId} no encontrado.`);
+            }
+            cart.products.push({ product, quantity });
           }
+      
           await cart.save();
+          console.log('Carrito después de la actualización:', cart);
           return cart;
         } catch (error) {
           console.error('Error al agregar un producto al carrito en MongoDB:', error.message);
           throw error;
         }
       }
+
     
 
     async deleteCart(cartId) {
