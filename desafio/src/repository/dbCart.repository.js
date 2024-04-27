@@ -84,34 +84,31 @@ class DbCartRepository {
 
     async addProductToCart(cartId, productId, quantity) {
         try {
-            // Buscar el carrito por su ID y poblar los detalles completos del producto
-            const cart = await cartModel.findById(cartId).populate('products.product');
-            
-            // Verificar si el carrito existe
+            const cart = await cartModel.findById(cartId);
+    
             if (!cart) {
                 throw new Error(`Carrito con ID ${cartId} no encontrado.`);
             }
     
-            console.log('Carrito antes de la actualización:', JSON.stringify(cart, null, 2));
-    
-            // Buscar si ya existe el producto en el carrito
             const existingProduct = cart.products.find(item => item.product && item.product._id.equals(productId));
             if (existingProduct) {
-                // Si el producto ya existe en el carrito, actualizar la cantidad
                 existingProduct.quantity += quantity;
             } else {
-                // Si el producto no existe en el carrito, agregarlo
                 const product = await productModel.findById(productId);
                 if (!product) {
                     throw new Error(`Producto con ID ${productId} no encontrado.`);
                 }
-                cart.products.push({ product: product.toJSON, quantity });
+    
+                cart.products.push({ product: product._id, quantity: quantity });
             }
+    
             await cart.save();
-            console.log('Carrito después de guardar:', cart); 
-            return cart;
+    
+            const populatedCart = await cartModel.findById(cartId).populate('products.product').lean();
+    
+            return populatedCart;
         } catch (error) {
-            console.error('Error al agregar un producto al carrito en MongoDB:', error.message);
+            console.error('Error al agregar un producto al carrito en el servicio:', error.message);
             throw error;
         }
     }

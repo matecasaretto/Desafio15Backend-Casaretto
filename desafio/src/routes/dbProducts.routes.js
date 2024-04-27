@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", getAllProducts);
 router.post("/", authenticateRole('premium'), addProduct); 
 router.get("/:productId", getProductById);
-router.delete("/:productId", authenticateRole('premium'), authorizeProductDeletion, deleteProductById);
+router.delete("/:productId"/* , authenticateRole('premium') */, authorizeProductDeletion, deleteProductById);
 router.put("/:productId", authorizeProductModification, updateProduct);
 
 export default router;

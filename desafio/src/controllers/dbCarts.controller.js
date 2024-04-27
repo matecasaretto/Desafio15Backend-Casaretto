@@ -4,19 +4,11 @@ import Ticket from '../dao/models/ticket.model.js';
 import productModel from '../dao/models/product.model.js';
 import { EError } from '../enums/EError.js';
 import { CustomError } from '../services/customError.service.js';
-
+import cartModel from '../dao/models/cart.model.js';
 
 
 function generateUniqueCode() {
   return uuidv4();
-}
-
-function calculateTotalAmount(products) {
-  let totalAmount = 0;
-  for (const item of products) {
-    totalAmount += item.product.price * item.quantity;
-  }
-  return totalAmount;
 }
 
 
@@ -131,17 +123,91 @@ async function createCart(req, res) {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function addProductToCart(req, res) {
   const { cartId } = req.params;
   const { productId, quantity } = req.body;
 
   try {
-    const updatedCart = await dbCartService.addProductToCart(cartId, productId, quantity);
-    res.json(updatedCart);
+      if (!cartId || !productId || !quantity) {
+          throw new Error('Se requiere cartId, productId y quantity.');
+      }
+
+      const product = await productModel.findById(productId);
+      if (!product) {
+          throw new Error(`Producto con ID ${productId} no encontrado.`);
+      }
+
+      const updatedCart = await dbCartService.addProductToCart(cartId, productId, quantity);
+
+      res.json(updatedCart);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      console.error('Error al agregar producto al carrito:', error);
+      res.status(500).json({ error: error.message });
   }
 }
+
+
+
+async function showCart(req, res) {
+  const { cartId } = req.params;
+
+  try {
+      const cart = await cartModel.findById(cartId).populate('products.product').lean();
+
+      if (!cart) {
+          return res.status(404).send('Carrito no encontrado');
+      }
+
+      let cartTotal = 0;
+      cart.products.forEach(item => {
+          cartTotal += item.quantity * item.product.price;
+      });
+
+      cartTotal = cartTotal.toFixed(2); 
+
+      res.render('dbCart', { cart, cartTotal });
+  } catch (error) {
+      console.error('Error al cargar el carrito:', error);
+      res.status(500).send('Error al cargar el carrito');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function deleteCart(req, res) {
   const { cartId } = req.params;
@@ -210,5 +276,5 @@ export {
   updateCart,
   updateProductQuantity,
   deleteAllProductsFromCart,
-  
+  showCart
 };
