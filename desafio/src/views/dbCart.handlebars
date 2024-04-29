@@ -13,7 +13,7 @@
             padding: 0;
         }
 
-       nav {
+        nav {
             text-align: center;
             padding: 10px 0;
         }
@@ -63,16 +63,22 @@
             margin-top: 20px;
         }
 
-        input[type="submit"] {
+        input[type="submit"], .delete-cart-btn {
             padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
             border: none;
             cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
 
-        input[type="submit"]:hover {
+        input[type="submit"]:hover, .delete-cart-btn:hover {
             background-color: #0056b3;
+        }
+
+        .delete-cart-btn {
+            background-color: #dc3545; 
         }
     </style>
 </head>
@@ -82,21 +88,26 @@
             <li><a href="/">Home</a></li>
             <li><a href="/profile">Perfil</a></li>
             <li><a href="/chat">Chat</a></li>
-            <li><a href="/carts/{{user.cart}}">Carrito</a></li> 
+            <li><a href="/carts/{{cart._id}}">Carrito</a></li> 
         </ul>
     </nav>
 
     <div class="container">
-        <h1>Detalles del Carrito</h1>
-        <p><strong>ID del Carrito:</strong> {{cart._id}}</p>
+        <h1>Tus productos te esperan {{user.first_name}} {{user.last_name}}</h1>
+        <p id="p"><strong>ID del Carrito:</strong> {{cart._id}}</p>
         <ul>
             {{#each cart.products}}
                 <li>
-                    <p><strong>Producto:</strong> {{this.product.title}}</p>
+                    <p><strong>{{cartId}}</strong></p>
+                    <p><strong>Producto:</strong> {{products.title}}</p>
                     <p><strong>Descripción:</strong> {{this.product.description}}</p>
                     <p><strong>Cantidad:</strong> {{this.quantity}}</p>
                     <p><strong>Precio Unitario:</strong> ${{this.product.price}}</p>
                     <img src="{{this.product.thumbnail}}" alt="Thumbnail del Producto">
+                    {{!-- <form id="deleteProductForm-{{this.product._id}}" action="/api/dbcarts/{{_id}}/products/{{this.product._id}}" method="POST" onsubmit="event.preventDefault(); deleteProductFromCart('{{_id}}', '{{this.product._id}}')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="submit" value="Eliminar Producto">
+                    </form>   --}}    
                 </li>
             {{/each}}
         </ul>
@@ -105,6 +116,16 @@
         <form id="checkoutForm" action="/checkout" method="post">
             <input type="submit" value="Finalizar Compra">
         </form>
+
+        <form id="deleteCartForm" action="/api/dbcarts/{{cart._id}}/products" method="DELETE">
+            <input type="button" class="delete-cart-btn" value="Vaciar Carrito" onclick="deleteCart()">
+        </form>
     </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/deleteCart.js"></script>
+   {{!--  <script src="/js/deleteProductFromCart.js"></script> --}}
+    
 </body>
 </html>

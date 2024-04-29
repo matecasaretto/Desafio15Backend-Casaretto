@@ -35,7 +35,7 @@ class DbCartRepository {
                 throw new Error(`Producto con ID ${productId} no encontrado en el carrito.`);
             }
       
-            cart.products.splice(index, 1); // Elimina el producto del array de productos del carrito
+            cart.products.splice(index, 1); 
             console.log('Producto eliminado del carrito');
           
             await cart.save();
@@ -147,15 +147,11 @@ class DbCartRepository {
     async deleteAllProductsFromCart(cartId) {
         try {
             const cart = await cartModel.findOne({ _id: cartId });
-
             if (!cart) {
                 throw new Error(`Carrito con ID ${cartId} no encontrado.`);
             }
-
             cart.products = [];
-
             await cart.save();
-
             console.log(`Todos los productos del carrito con ID ${cartId} han sido eliminados`);
             return cart;
         } catch (error) {
@@ -167,15 +163,11 @@ class DbCartRepository {
     async updateCart(cartId, updatedProducts) {
         try {
             const cart = await cartModel.findOne({ _id: cartId });
-        
             if (!cart) {
                 throw new Error(`Carrito con ID ${cartId} no encontrado.`);
             }
-        
             cart.products = updatedProducts;
-        
             await cart.save();
-        
             return cart;
         } catch (error) {
             console.error(`Error al actualizar el carrito con ID ${cartId}: ${error.message}`);

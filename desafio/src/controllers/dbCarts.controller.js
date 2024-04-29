@@ -182,7 +182,9 @@ async function showCart(req, res) {
 
       cartTotal = cartTotal.toFixed(2); 
 
-      res.render('dbCart', { cart, cartTotal });
+      res.render('dbCart', { cart, cartTotal, user: req.session.user });  
+
+      console.log(cart)
   } catch (error) {
       console.error('Error al cargar el carrito:', error);
       res.status(500).send('Error al cargar el carrito');
@@ -260,6 +262,7 @@ async function deleteAllProductsFromCart(req, res) {
 
   try {
     await dbCartService.deleteAllProductsFromCart(cartId);
+
     res.json({ message: `Todos los productos del carrito con ID ${cartId} han sido eliminados` });
   } catch (error) {
     res.status(500).json({ error: error.message });

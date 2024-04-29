@@ -11,12 +11,10 @@ const home = async (req, res) => {
     const options = {
       limit: parseInt(limit, 10),
       page: parseInt(page, 10),
-      /* ort: getOrderSort(order) */
     };
 
     const products = await productManager.consultarProductos(options, null, category, order);
 
-    // Construir los enlaces de paginación
     const prevLink = products.hasPrevPage ? `/api/dbproducts?limit=${limit}&page=${products.prevPage}&order=${order}&category=${category}` : null;
     const nextLink = products.hasNextPage ? `/api/dbproducts?limit=${limit}&page=${products.nextPage}&order=${order}&category=${category}` : null;
 
@@ -32,13 +30,9 @@ async function addToCart(req, res) {
   const { productId, quantity } = req.body;
 
   try {
-    // Lógica para agregar el producto al carrito usando cartId, productId y quantity
-    // Debes llamar a la función que agrega el producto al carrito aquí
-
-    // Una vez que se haya agregado el producto al carrito, redirige al usuario a la vista del carrito
-    res.redirect(`/carts/${cartId}`); // Ajusta la ruta según sea necesario
+    
+    res.redirect(`/carts/${cartId}`); 
   } catch (error) {
-    // Manejo de errores si ocurre algún problema al agregar el producto al carrito
     res.status(500).json({ error: error.message });
   }
 }

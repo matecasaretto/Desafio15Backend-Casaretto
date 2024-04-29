@@ -61,14 +61,12 @@ export const authorizeProductDeletion = async (req, res, next) => {
             throw new Error('Usuario no autenticado');
         }
 
-        // Obtener el producto por su ID
         const product = await productModel.findById(productId);
 
         if (!product) {
             throw new Error('Producto no encontrado');
         }
 
-        // Verificar si el usuario tiene permiso para eliminar el producto
         if (user.role === 'admin' || (user.role === 'premium' && product.owner === user.email)) {
             next();
         } else {
