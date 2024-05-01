@@ -53,9 +53,10 @@
 <body>
     <div class="container">
         <h1>Tu perfil (Sin datos sensibles)</h1>
-        <p>Nombre: {{user.first_name}} {{user.last_name}}</p>
+        <p>Nombre: {{req.user.first_name}} {{user.last_name}}</p>
         <p>Email: {{user.email}}</p>
         <p>Edad: {{user.age}}</p>
+        <p>Coneccion: {{user.last_connection}}</p>
         {{#if user.role}}
             <p>Rol: {{user.role}}</p>
         {{else}}

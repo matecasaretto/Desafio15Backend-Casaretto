@@ -86,7 +86,7 @@ const realTimeProducts = (req, res) => {
 };
 
 const chat = (req, res) => {
-  res.render('chat'); 
+  res.render('chat', { user: req.session.user }); 
 };
 
 const register = (req, res) => {

@@ -113,7 +113,7 @@
         </ul>
         <p><strong>Total del Carrito:</strong> ${{cartTotal}}</p>
 
-        <form id="checkoutForm" action="/checkout" method="post">
+        <form id="checkoutForm" action="/api/dbcarts/{{cart._id}}/purchase" method="post">
             <input type="submit" value="Finalizar Compra">
         </form>
 

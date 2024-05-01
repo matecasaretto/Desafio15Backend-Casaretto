@@ -5,6 +5,7 @@ import productModel from '../dao/models/product.model.js';
 import { EError } from '../enums/EError.js';
 import { CustomError } from '../services/customError.service.js';
 import cartModel from '../dao/models/cart.model.js';
+import { sendPurchaseConfirmationEmail } from '../services/mailing.js';
 
 
 function generateUniqueCode() {
@@ -28,7 +29,6 @@ export async function purchaseCart(req, res) {
 
     for (const cartProduct of cart.products) {
       const product = await productModel.findById(cartProduct.product);
-      console.log("Producto:", product); 
     
       const quantityInCart = cartProduct.quantity;
     
@@ -54,7 +54,6 @@ export async function purchaseCart(req, res) {
       product.stock -= quantityInCart;
       await product.save();
 
-
       ticketProducts.push({
         product: product._id,
         quantity: quantityInCart
@@ -78,7 +77,9 @@ export async function purchaseCart(req, res) {
 
     console.log("Compra realizada exitosamente");
 
-    return res.status(200).json({ status: "success", message: "Compra realizada exitosamente", ticket: ticket });
+    await sendPurchaseConfirmationEmail(req.user.email, ticket);
+
+    return res.render('thankyou', { ticket: ticket }); 
   } catch (error) {
     console.error("Error al procesar la compra:", error);
     return res.status(500).json({ error: "Error al procesar la compra" });

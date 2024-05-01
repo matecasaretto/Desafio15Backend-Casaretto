@@ -2,6 +2,33 @@ import User from "../dao/models/user.model.js";
 
 
 class UserController {
+
+    static async deleteInactiveUsers() {
+        try {
+            // Calcular la fecha límite (30 minutos)
+            const limitDate = new Date();
+            limitDate.setMinutes(limitDate.getMinutes() - 30);
+        
+            const result = await User.deleteMany({ last_connection: { $lt: limitDate } });
+        
+            console.log(`${result.deletedCount} usuarios eliminados por inactividad.`);
+          } catch (error) {
+            console.error("Error al eliminar usuarios inactivos:", error);
+          }
+        }
+
+    static async getAllUsers(req, res) {
+        try {
+          const users = await User.find({}, 'first_name email role');
+    
+          res.status(200).json(users);
+        } catch (error) {
+          console.error('Error al obtener usuarios:', error);
+          res.status(500).json({ error: 'Error interno del servidor' });
+        }
+      }
+    
+
     static async uploadDocuments(req, res) {
         try {
             const userId = req.params.uid;
@@ -48,7 +75,6 @@ class UserController {
                 return res.status(400).json({ status: "error", message: "El usuario debe cargar todos los documentos requeridos para cambiar a premium." });
             }
     
-            // Cambiar el rol del usuario
             user.role = user.role === "user" ? "premium" : "user";
             await user.save();
     
@@ -58,6 +84,10 @@ class UserController {
             res.status(500).json({ status: "error", message: "Hubo un error al cambiar el rol del usuario" });
         }
     }
+
+
 }
+
+
 
 export { UserController };

@@ -4,29 +4,101 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      text-align: center;
+      padding: 10px 0;
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    nav ul {
+      display: inline;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      border-bottom: 1px solid #ddd;
+      padding: 20px 0;
+    }
+
+    form {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
   <nav>
-      <ul> 
-        <li><a href="/">Home</a></li>
-        <li><a href="/profile">Perfil</a></li>
-        <li><a href="/chat">Chat</a></li>
-        <li><a href="/carts/{{user.cart}}">Carrito</a></li> 
-      </ul>
-    </nav>
-  <h1>Chat</h1>
-  <ul id="message-list"></ul>
-  <form id="message-form">
-    <label for="user">User:</label>
-    <input type="text" id="user" name="user" required>
-    <label for="message">Message:</label>
-    <input type="text" id="message" name="message" required>
-    <button type="submit">Send</button>
-  </form>
+    <ul> 
+      <li><a href="/">Home</a></li>
+      <li><a href="/profile">Perfil</a></li>
+      <li><a href="/chat">Chat</a></li>
+      <li><a href="/carts/{{user.cart}}">Carrito</a></li> 
+    </ul>
+  </nav>
+  <div class="container">
+    <h1>Chat</h1>
+    <ul id="message-list"></ul>
+    <form id="message-form">
+      <label for="user">User:</label>
+      <input type="text" id="user" name="user" required>
+      <label for="message">Message:</label>
+      <input type="text" id="message" name="message" required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
 
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
   <script src="/js/chat.js"></script>
-
-
 </body>
 </html>

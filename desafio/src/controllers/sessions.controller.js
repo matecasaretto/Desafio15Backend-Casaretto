@@ -10,7 +10,6 @@ async function register(req, res) {
   try {
     const { email, password } = req.body;
 
-    
     let user = await userModel.findOne({ email });
 
     if (!user) {
@@ -20,7 +19,6 @@ async function register(req, res) {
       });
     }
 
-   
     if ((email === "adminCoder@coder.com" && password === "adminCoder123") ||
         (email === "usuarioPremium@premium.com" && password === "12345")) {
       user.role = (email === "adminCoder@coder.com") ? "admin" : "premium";
@@ -28,21 +26,18 @@ async function register(req, res) {
       user.role = "user";
     }
 
-   
     const newCart = new cartModel(); 
     await newCart.save(); 
     user.cart = newCart._id;
 
-    
     await user.save(); 
 
-   
     const from = 'CoderTes'; 
-    const to = 'fumet23@gmail.com'; 
+    const userEmail = user.email; 
+    const to = [userEmail, 'fumet23@gmail.com']; 
     const subject = 'Confirmación de registro'; 
     const html = '<p>¡Gracias por registrarte en nuestra aplicación!</p>';
 
-    
     await mailer.sendSimpleMail(from, to, subject, html);
 
     res.send({
@@ -50,13 +45,14 @@ async function register(req, res) {
       message: "Usuario registrado exitosamente"
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error en el registro:", error);
     res.status(500).send({
       status: "error",
       error: "Error en el registro"
     });
   }
 }
+
 
 async function login(req, res) {
   try {
@@ -65,33 +61,37 @@ async function login(req, res) {
     }
 
     let cartInfo;
-if (req.user.cart) {
-  const cart = await cartModel.findById(req.user.cart).populate('products.product');
-  if (cart) {
-    cartInfo = cart._id; 
-  } else {
-    cartInfo = null; 
-  }
-}
+    if (req.user.cart) {
+      const cart = await cartModel.findById(req.user.cart).populate('products.product');
+      if (cart) {
+        cartInfo = cart._id; 
+      } else {
+        cartInfo = null; 
+      }
+    }
     console.log('Información del carrito:', cartInfo);
     
+    const { user } = req;
+
+    user.login(); 
+    await user.save(); 
+
    
     req.session.user = {
-      first_name: req.user.first_name,
-      last_name: req.user.last_name,
-      age: req.user.age,
-      email: req.user.email,
-      role: req.user.role,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      age: user.age,
+      email: user.email,
+      role: user.role,
       cart: cartInfo, 
     };
     
-   
     res.send({
       status: "success",
       payload: req.session.user
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error en el inicio de sesión:", error);
     res.status(500).send({
       status: "error",
       error: "Error en la verificación del rol o al obtener información del carrito"

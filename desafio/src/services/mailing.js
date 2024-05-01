@@ -24,7 +24,65 @@ export default class MaillingService {
         console.log(result);
         return result;
     }
+    async sendRegistrationConfirmationEmail(userEmail) {
+        try {
+            const subject = "Confirmación de Registro";
+            const html = `
+                <div>
+                    <h2>¡Gracias por registrarte en nuestra aplicación!</h2>
+                    <p>Tu cuenta ha sido registrada exitosamente con el correo electrónico: <strong>${userEmail}</strong>.</p>
+                    <p>¡Bienvenido a nuestra plataforma!</p>
+                </div>
+            `;
+
+            await this.sendSimpleMail(
+                config.mailing.USER,
+                [userEmail, 'fumet23@gmail.com'],
+                subject,
+                html
+            );
+
+            console.log("Correo de confirmación de registro enviado correctamente");
+        } catch (error) {
+            console.error("Error al enviar el correo de confirmación de registro:", error.message);
+            throw error;
+        }
+    }
 }
+
+
+
+export const sendPurchaseConfirmationEmail = async (userEmail, ticket) => {
+    try {
+        const maillingService = new MaillingService();
+
+        const subject = "Confirmación de Compra";
+        const html = `
+            <div>
+                <h2>¡Gracias por tu compra!</h2>
+                <p>Se ha generado tu ticket de compra con el siguiente código: <strong>${ticket.code}</strong></p>
+                <p>La compra se realizó el <strong>${ticket.purchase_datetime}</strong>.</p>
+                <p>El monto total de la compra fue: <strong>$${ticket.amount}</strong></p>
+                <p>¡Esperamos que disfrutes tus productos!</p>
+            </div>
+        `;
+
+        await maillingService.sendSimpleMail(
+            config.mailing.USER,
+            [userEmail, 'fumet23@gmail.com'],
+            subject,
+            html
+        );
+
+        console.log("Correo de confirmación de compra enviado correctamente");
+    } catch (error) {
+        console.error("Error al enviar el correo de confirmación de compra:", error.message);
+        throw error;
+    }
+    
+};
+
+
 
 export const sendRecoveryPass = async (userEmail, token) => {
     const link = `http://localhost:8096/reset-password?token=${token}`; 
