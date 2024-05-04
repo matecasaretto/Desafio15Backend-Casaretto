@@ -1,27 +1,37 @@
 const form = document.getElementById('loginForm');
 
- 
-
-form.addEventListener("submit", e =>{
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const data = new FormData(form);
+    const formData = new FormData(form);
     const obj = {};
 
-    data.forEach((value,key)=>obj[key]=value);
-    
-    fetch('/api/sessions/login',{
-        method:"POST",
-        body:JSON.stringify(obj),
-        headers:{
-            "Content-Type":"application/json"
-        }
-    }).then(result=>{
-        if(result.status===200){
-            window.location.replace('/')
-        }else{
-            console.log(result);
-        }
-    })
+    formData.forEach((value, key) => {
+        obj[key] = value;
+    });
 
-})
+    try {
+        const response = await fetch('/api/sessions/login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        });
+    
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+    
+            if (data.redirect) {
+                window.location.replace(data.redirect);  
+            }
+        } else {
+            console.log('Error en la solicitud:', response.status);
+            alert('Inicio de sesión fallido. Verifica tus credenciales.');
+        }
+    } catch (error) {
+        console.error('Error de red:', error);
+        alert('Error de red. Inténtalo de nuevo más tarde.');
+    }
+});

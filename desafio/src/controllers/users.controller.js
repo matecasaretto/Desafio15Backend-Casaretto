@@ -1,21 +1,53 @@
 import User from "../dao/models/user.model.js";
+import MaillingService from "../services/mailing.js";
 
 
 class UserController {
 
+    /* static async deleteAllUsers(req, res) {
+        try {
+          // Eliminar todos los usuarios con el rol "user"
+          const result = await User.deleteMany({ role: 'Usuario' });
+    
+          res.status(200).json({
+            status: 'success',
+            message: `Se eliminaron ${result.deletedCount} usuarios con rol "user"`,
+          });
+        } catch (error) {
+          console.error('Error al eliminar usuarios:', error);
+          res.status(500).json({
+            status: 'error',
+            message: 'Hubo un problema al eliminar los usuarios',
+          });
+        }
+      } */
+    
     static async deleteInactiveUsers() {
         try {
-            // Calcular la fecha límite (30 minutos)
             const limitDate = new Date();
-            limitDate.setMinutes(limitDate.getMinutes() - 30);
-        
+            limitDate.setMinutes(limitDate.getMinutes() - 30); 
+
             const result = await User.deleteMany({ last_connection: { $lt: limitDate } });
-        
+
             console.log(`${result.deletedCount} usuarios eliminados por inactividad.`);
-          } catch (error) {
+
+            const maillingService = new MaillingService();
+
+            if (result.deletedCount > 0) {
+                console.log("Enviando correos de eliminación de cuenta...");
+
+                const deletedUsers = await User.find({ last_connection: { $lt: limitDate } });
+
+                for (const user of deletedUsers) {
+                    await maillingService.sendAccountDeletionEmail(user.email);
+                }
+
+                console.log("Correos de eliminación de cuenta enviados correctamente.");
+            }
+        } catch (error) {
             console.error("Error al eliminar usuarios inactivos:", error);
-          }
         }
+    }
 
     static async getAllUsers(req, res) {
         try {
@@ -65,10 +97,9 @@ class UserController {
                 return res.status(404).json({ status: "error", message: "Usuario no encontrado" });
             }
     
-            // Verificar si el usuario tiene los documentos requeridos para el rol "premium"
             const requiredDocuments = ['Identificacion', 'Comprobante_de_domicilio', 'Comprobante_de_estado_de_cuenta'];
-            const userDocuments = user.documents.map(doc => doc.name.toLowerCase()); // Convertir nombres a minúsculas
-            const requiredDocumentsLower = requiredDocuments.map(doc => doc.toLowerCase()); // Convertir nombres a minúsculas
+            const userDocuments = user.documents.map(doc => doc.name.toLowerCase()); 
+            const requiredDocumentsLower = requiredDocuments.map(doc => doc.toLowerCase()); 
             const hasAllDocuments = requiredDocumentsLower.every(doc => userDocuments.includes(doc));
     
             if (!hasAllDocuments) {
@@ -87,7 +118,5 @@ class UserController {
 
 
 }
-
-
 
 export { UserController };

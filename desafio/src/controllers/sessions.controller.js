@@ -1,8 +1,9 @@
 // Importar el modelo de usuario y otros módulos necesarios
-import userModel from "../dao/models/user.model.js";
+import User from "../dao/models/user.model.js";
 import cartModel from "../dao/models/cart.model.js";
 import { createHash } from "../utils.js";
 import MaillingService from '../services/mailing.js';
+import { validatePassword } from "../utils.js";
 
 const mailer = new MaillingService();
 
@@ -10,7 +11,7 @@ async function register(req, res) {
   try {
     const { email, password } = req.body;
 
-    let user = await userModel.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).send({
@@ -19,12 +20,13 @@ async function register(req, res) {
       });
     }
 
-    if ((email === "adminCoder@coder.com" && password === "adminCoder123") ||
-        (email === "usuarioPremium@premium.com" && password === "12345")) {
-      user.role = (email === "adminCoder@coder.com") ? "admin" : "premium";
+    if (email === "fumet23@gmail.com" && password === "12345") {
+      user.role = "premium";
+    } else if (email === "adminCoder@coder.com" && password === "adminCoder123") {
+      user.role = "admin";
     } else {
       user.role = "user";
-    }
+    } 
 
     const newCart = new cartModel(); 
     await newCart.save(); 
@@ -56,46 +58,49 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    if (!req.user) {
-      return res.status(400).send({ status: "error" });
-    }
-
-    let cartInfo;
-    if (req.user.cart) {
-      const cart = await cartModel.findById(req.user.cart).populate('products.product');
-      if (cart) {
-        cartInfo = cart._id; 
-      } else {
-        cartInfo = null; 
+      if (!req.user) {
+          return res.status(400).send({ status: "error", message: "Usuario no autenticado" });
       }
-    }
-    console.log('Información del carrito:', cartInfo);
-    
-    const { user } = req;
 
-    user.login(); 
-    await user.save(); 
+      const user = req.user;
 
-   
-    req.session.user = {
-      first_name: user.first_name,
-      last_name: user.last_name,
-      age: user.age,
-      email: user.email,
-      role: user.role,
-      cart: cartInfo, 
-    };
-    
-    res.send({
-      status: "success",
-      payload: req.session.user
-    });
+      const existingUser = await User.findById(user._id);
+      if (!existingUser) {
+          return res.status(400).send({ status: "error", message: "Usuario no encontrado en la base de datos" });
+      }
+
+      let cartInfo = null;
+      if (user.cart) {
+          const cart = await cartModel.findById(user.cart).populate('products.product');
+          if (cart) {
+              cartInfo = cart._id;
+          }
+      }
+
+      existingUser.login();
+      await existingUser.save();
+
+      req.session.user = {
+          first_name: existingUser.first_name,
+          last_name: existingUser.last_name,
+          age: existingUser.age,
+          email: existingUser.email,
+          role: existingUser.role,
+          cart: cartInfo,
+      };
+
+      res.send({
+          status: "success",
+          payload: req.session.user,
+          redirect: "/"  
+      });
   } catch (error) {
-    console.error("Error en el inicio de sesión:", error);
-    res.status(500).send({
-      status: "error",
-      error: "Error en la verificación del rol o al obtener información del carrito"
-    });
+      console.error("Error en el inicio de sesión:", error);
+      alert("Contrase;a o email invalidos")
+      res.status(500).send({
+          status: "error",
+          error: "Error en la verificación del rol o al obtener información del carrito"
+      });
   }
 }
 

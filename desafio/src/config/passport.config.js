@@ -42,16 +42,16 @@ const initializePassport = () => {
     ));
 
     passport.use("login", new LocalStrategy(
-      { usernameField: "email" },
-      async (email, password, done) => {
+        { usernameField: "email" },
+        async (email, password, done) => {
           try {
-              const user = await User.findOne({ email });
-              if (!user) {
-                  return done(null, false, { message: "Usuario no encontrado" });
-              }
+            const user = await User.findOne({ email });
+            if (!user) {
+              return done(null, false, { message: "Usuario no encontrado" });
+            }
   
-              if (!validatePassword(password, user)) {
-                  return done(null, false, { message: "Contraseña incorrecta" });
+            if (!validatePassword(password, user.password)) {
+                return done(null, false, { message: "Contraseña incorrecta" });
               }
   
               return done(null, user);

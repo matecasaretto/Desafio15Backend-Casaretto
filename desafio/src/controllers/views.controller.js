@@ -94,7 +94,7 @@ const register = (req, res) => {
 };
 
 const login = (req, res) => {
-  res.render('login');
+  res.render('login'), { user: req.session.user };
 };
 
 const profile = (req, res) => {

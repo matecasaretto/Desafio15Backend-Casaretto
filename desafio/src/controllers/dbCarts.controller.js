@@ -124,23 +124,6 @@ async function createCart(req, res) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function addProductToCart(req, res) {
   const { cartId } = req.params;
   const { productId, quantity } = req.body;
@@ -163,8 +146,6 @@ async function addProductToCart(req, res) {
       res.status(500).json({ error: error.message });
   }
 }
-
-
 
 async function showCart(req, res) {
   const { cartId } = req.params;
@@ -191,25 +172,6 @@ async function showCart(req, res) {
       res.status(500).send('Error al cargar el carrito');
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 async function deleteCart(req, res) {

@@ -37,9 +37,6 @@ export const generateMockProducts = (count = 100) => {
     return products;
 };
 
-export const isValidPassword = (password, user)=>{
-    return bcrypt.compareSync(password, user.password)
-};
 
 export const generateEmailToken = (email, expireTime) => {
     try {
@@ -64,6 +61,7 @@ export const verifyEmailToken = (token) => {
 };
 
 export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-export const validatePassword = (password, user) => bcrypt.compareSync(password, user.password);
 
-
+export const validatePassword = (password, hashedPassword) => {
+    return bcrypt.compareSync(password, hashedPassword);
+  };

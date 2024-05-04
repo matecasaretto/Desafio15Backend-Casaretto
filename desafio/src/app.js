@@ -35,7 +35,7 @@ import viewRouters from './routes/views.routes.js';
 
 console.log(config)
 const app = express();
-const PORT = config.server.port;
+const PORT = process.env.PORT||8096;
 
 app.use(express.json());
 app.use(errorHandler); 
@@ -45,7 +45,7 @@ app.use(express.static(__dirname + '/public'))
 /* const MONGO = "mongodb+srv://codermate2:skatemylife2@codermate2.atlvl2t.mongodb.net/ecomerce"
  */
 
-const connection = mongoose.connect(config.mongo.url);
+const connection = mongoose.connect(process.env.MONGO_URL);
 
 
 app.use(session({

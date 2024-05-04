@@ -48,8 +48,32 @@ export default class MaillingService {
             throw error;
         }
     }
+    async sendAccountDeletionEmail(userEmail) {
+        try {
+            const subject = "Eliminación de Cuenta por Inactividad";
+            const html = `
+                <div>
+                    <h2>¡Tu cuenta ha sido eliminada por inactividad!</h2>
+                    <p>Lamentamos informarte que tu cuenta ha sido eliminada debido a inactividad.</p>
+                    <p>Si deseas seguir utilizando nuestros servicios, por favor regístrate nuevamente.</p>
+                    <p>¡Esperamos verte pronto!</p>
+                </div>
+            `;
+    
+            await this.sendSimpleMail(
+                config.mailing.USER,
+                userEmail,
+                subject,
+                html
+            );
+    
+            console.log(`Correo de eliminación de cuenta enviado a ${userEmail}`);
+        } catch (error) {
+            console.error("Error al enviar el correo de eliminación de cuenta:", error.message);
+            throw error;
+        }
+    }
 }
-
 
 
 export const sendPurchaseConfirmationEmail = async (userEmail, ticket) => {

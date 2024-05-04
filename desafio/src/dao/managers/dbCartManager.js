@@ -31,7 +31,7 @@ class DbCartManager {
             throw new Error(`Producto con ID ${productId} no encontrado en el carrito.`);
         }
   
-        cart.products.splice(index, 1); // Elimina el producto del array de productos del carrito
+        cart.products.splice(index, 1); 
         console.log('Producto eliminado del carrito');
       
         await cart.save();

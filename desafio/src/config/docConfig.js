@@ -11,7 +11,7 @@ const swaggerOptions = {
             description:"Definicion de endpoints para la API de Coder"
         }
     },
-    apis:[`${path.join(__dirname,"../docs/**/*.yaml")}`], //Aqui van los archivos
+    apis:[`${path.join(__dirname,"../docs/**/*.yaml")}`], 
 };
 
 export const swaggerSpecs = swaggerJsDoc(swaggerOptions);

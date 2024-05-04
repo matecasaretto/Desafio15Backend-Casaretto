@@ -28,19 +28,19 @@ const customLevels = {
 const devLogger = winston.createLogger({
     levels: customLevels.levels,
     transports: [
-        new winston.transports.Console({ level: "debug" }) // Loggear a partir de debug en consola
+        new winston.transports.Console({ level: "debug" }) 
     ]
 });
 
 const prodLogger = winston.createLogger({
     levels: customLevels.levels,
     transports: [
-        new winston.transports.Console({ level: "info" }), // Loggear a partir de info en consola
+        new winston.transports.Console({ level: "info" }),
         new winston.transports.File({ filename: path.join(__dirname, "/logs/errors.log"), level: "error" }) // Registrar errores en archivo
     ]
 });
 
-// Middleware para añadir el logger a la solicitud
+
 const addLogger = (req, res, next) => {
     const currentEnv = process.env.NODE_ENV || "development";
     if (currentEnv === "development") {

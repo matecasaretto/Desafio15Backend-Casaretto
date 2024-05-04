@@ -100,7 +100,6 @@ class CartManager {
         cart.products.push(productToAdd);
       }
   
-      // Guardar la lista actualizada en el archivo
       await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
   
       return cart;

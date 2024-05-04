@@ -5,7 +5,7 @@ import { GetUserDto } from "../dao/dto/user.dto.js";
 import User from "../dao/models/user.model.js";
 import { createHash } from "../utils.js";
 
-import { generateEmailToken, verifyEmailToken, isValidPassword } from "../utils.js";
+import { generateEmailToken, verifyEmailToken, validatePassword } from "../utils.js";
 import { sendRecoveryPass } from "../services/mailing.js";
 
 const router = new Router();
@@ -17,7 +17,7 @@ router.get("/failregister", async (req, res) => {
   res.send({ error: 'fallo en el registro' });
 });
 
-router.post("/login", passport.authenticate("login", { failureRedirect: '/api/sessions/faillogin' }), login);0
+router.post("/login", passport.authenticate("login", { failureRedirect: '/api/sessions/faillogin' }), login);
 
 router.get("/faillogin",(req,res)=>{
   res.send({error:"fail login"})
@@ -94,8 +94,8 @@ router.post("/reset-password", async (req, res) => {
       return res.send("El usuario no está registrado");
     }
   
-    const newPasswordHashed = createHash(newPassword); // Hashea la nueva contraseña
-    user.password = newPasswordHashed; // Asigna la contraseña hasheada al usuario antes de guardarla en la base de datos
+    const newPasswordHashed = createHash(newPassword); 
+    user.password = newPasswordHashed; 
     await user.save(); 
 
     res.render("login", { message: "Contraseña actualizada" });

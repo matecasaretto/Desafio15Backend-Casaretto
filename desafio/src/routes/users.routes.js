@@ -12,6 +12,9 @@ router.put("/premium/:uid", UserController.changeRol);
 
 router.delete("/", UserController.deleteInactiveUsers);
 
+/* router.delete('/users', UserController.deleteAllUsers); */
+
+
 
 export { router as usersRouter };
 
