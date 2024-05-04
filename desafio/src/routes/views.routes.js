@@ -35,7 +35,7 @@ const privateAccess = (req, res, next) =>{
 };
 
 
-router.get('/', home);
+router.get('/', privateAccess, home);
 router.post('/carts/:cartId/add-to-cart', addToCart);
 router.get('/dbproducts', dbProducts);
 router.get('/carts/:cartId', showCart);
